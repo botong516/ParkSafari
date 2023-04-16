@@ -37,7 +37,7 @@ q1 = `WITH parks AS (SELECT DISTINCT S.park_name, P.longitude, P.latitude
                              FROM park_airbnb)
 SELECT *
 FROM ranked_park_airbinb
-WHERE ranking > 0 AND ranking < 4
+WHERE ranking < 4
 GROUP BY name, distance_to_park, park_name, price, number_of_reviews, city, state, host_name, room_type, minimum_nights, availability_365
 ORDER BY distance_to_park;`
 
