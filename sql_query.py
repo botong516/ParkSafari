@@ -87,6 +87,8 @@ q2 = ``
 q3 = ``
 
 # Complex Query 4
+# Get top 10 most frequently appeared species in the nearby parks of the 100 top-rated Airbnbs 
+# that have trails with popularity less than or equal to 200 (e.g. Photography routes recommendation with more species and less people)
 q4 = `
 
 WITH top_airbnbs AS (
@@ -111,7 +113,7 @@ species_counts AS (
   FROM nearby_parks np
       JOIN Trail t ON np.park_code = t.park_code
       JOIN Species s ON t.park_name = s.park_name
-  WHERE t.elevation_gain <= 200
+  WHERE t.popularity <= 6
   GROUP BY s.species_id
 )
 
