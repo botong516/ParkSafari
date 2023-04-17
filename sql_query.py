@@ -87,6 +87,39 @@ q2 = ``
 q3 = ``
 
 # Complex Query 4
-q4 = ``
+q4 = `
+
+WITH top_airbnbs AS (
+  SELECT *
+  FROM Airbnb
+  ORDER BY number_of_reviews DESC
+  LIMIT 100
+),
+
+nearby_parks AS (
+  SELECT DISTINCT a.id, p.park_code
+  FROM top_airbnbs a
+  JOIN Park p ON (
+      3958.8 * (2 * ASIN(SQRT(POWER(SIN((RADIANS(a.latitude) - RADIANS(p.latitude)) / 2), 2) +
+                        COS(RADIANS(a.latitude)) * COS(RADIANS(p.latitude)) *
+                        POWER(SIN((RADIANS((a.longitude)) - RADIANS(p.longitude)) / 2), 2))))
+      ) <= 100
+),
+
+species_counts AS (
+  SELECT s.species_id, COUNT(*) AS occurrence_count
+  FROM nearby_parks np
+      JOIN Trail t ON np.park_code = t.park_code
+      JOIN Species s ON t.park_name = s.park_name
+  WHERE t.elevation_gain <= 200
+  GROUP BY s.species_id
+)
+
+SELECT s.species_id, s.common_names, sc.occurrence_count
+FROM Species s
+JOIN species_counts sc ON s.species_id = sc.species_id
+ORDER BY sc.occurrence_count DESC
+LIMIT 10;
+`
 
 
