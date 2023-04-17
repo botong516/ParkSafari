@@ -3,7 +3,7 @@ Explore the biodiversity at the destination of your next journey.
 
 ## Backend
 Before running, create `config.json` with the following values:
-```json
+```
 {
   "rds_host": ...,
   "rds_port": ...,
