@@ -1,21 +1,3 @@
-"""
-Get the top 10 most popular species in each park that has a trail with popularity >= 6.5731
-"""
-# Complex Query 3
-q3 = `WITH COUNT AS (
-SELECT scientific_name, COUNT(DISTINCT park_name) AS species_count
-FROM Species
-GROUP BY scientific_name),
-popular_park_species AS (
-SELECT S.park_name,C.scientific_name, ROW_NUMBER() over (PARTITION BY S.park_name ORDER BY C.species_count DESC) AS ranks
-FROM COUNT C JOIN Species S ON C.scientific_name=S.scientific_name JOIN Trail T on S.park_name = T.park_name
-WHERE T.popularity >= 6.5731
-GROUP BY S.park_name, C.scientific_name
-ORDER BY S.park_name, C.species_count DESC)
-SELECT *
-FROM popular_park_species P
-WHERE P.ranks <=10;`
-
 # Complex Query 4
 # Get top 10 most frequently appeared species in the nearby parks of the 100 top-rated Airbnbs
 # that have trails with popularity less than or equal to 200 (e.g. Photography routes recommendation with more species and less people)

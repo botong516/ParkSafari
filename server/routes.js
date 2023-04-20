@@ -82,9 +82,37 @@ const mostBiodiverseAirbnbs = async function (req, res) {
   });
 }
 
+const popularSpecies = async function (req, res) {
+  const num = req.query.num || 10; // default to 10 if num is not provided
+
+  connection.query(queries.popularSpecies(num), (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json([]);
+    } else {
+      res.json(data);
+    }
+  });
+}
+
+const speciesForGoodHomes = async function (req, res) {
+  const num = req.query.num || 10; // default to 10 if num is not provided
+
+  connection.query(queries.speciesForGoodHomes(num), (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json([]);
+    } else {
+      res.json(data);
+    }
+  });
+}
+
 module.exports = {
   parks,
   random,
   recommendedAirbnbs,
   mostBiodiverseAirbnbs,
+  popularSpecies,
+  speciesForGoodHomes,
 }

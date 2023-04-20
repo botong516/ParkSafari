@@ -8,7 +8,7 @@
  *
  * @param species A common name for the species of interest.
  * @param num The number of Airbnbs to return for each park.
- * @returns The SQL query string for this search.
+ * @return {string} The SQL query string for this search.
  */
 const recommendedAirbnbForSpecies = (species, num) =>
   `WITH parks AS (SELECT DISTINCT S.park_name, P.longitude, P.latitude
@@ -57,7 +57,7 @@ ORDER BY distance_to_park;`
  * @param species A common name for the species of interest.
  * @param num The number of Airbnbs to return for each park.
  * @param state The 2-letter code of the state of interest.
- * @returns The SQL query for this search.
+ * @return {string} The SQL query for this search.
  */
 const recommendedAirbnbInStateForSpecies = (species, num, state) =>
   `WITH parks AS (SELECT DISTINCT S.park_name, P.longitude, P.latitude
@@ -107,7 +107,7 @@ ORDER BY distance_to_park;`
  * @param neighbourhood The neighbourhood of interest.
  * @param distance The maximum distance from the Airbnb to the park in miles.
  * @param num The number of Airbnbs to return.
- * @returns The SQL query for this search.
+ * @return {string} The SQL query for this search.
  */
 const mostBiodiverseAirbnbs = (state, neighbourhood, distance, num) =>
   `WITH nearby_park AS (SELECT DISTINCT P.park_name,
@@ -130,8 +130,74 @@ SELECT DISTINCT A2.*, A1.count
 FROM biodiverse_airbnb A1
          JOIN Airbnb A2 ON A1.id = A2.id;`
 
+/**
+ * Complex Query 3: Popular species in popular parks
+ * Get the top n most popular species in each park that has a trail with popularity >= 6.5731
+ *
+ * @param num The number of species to return for each park.
+ * @return {string} The SQL query for this search.
+ */
+const popularSpecies = (num) =>
+  `WITH COUNT AS (
+SELECT scientific_name, COUNT(DISTINCT park_name) AS species_count
+FROM Species
+GROUP BY scientific_name),
+popular_park_species AS (
+SELECT S.park_name,C.scientific_name, ROW_NUMBER() over (PARTITION BY S.park_name ORDER BY C.species_count DESC) AS ranks
+FROM COUNT C JOIN Species S ON C.scientific_name=S.scientific_name JOIN Trail T on S.park_name = T.park_name
+WHERE T.popularity >= 6.5731
+GROUP BY S.park_name, C.scientific_name
+ORDER BY S.park_name, C.species_count DESC)
+SELECT *
+FROM popular_park_species P
+WHERE P.ranks <= ${num};`
+
+/**
+ * Complex Query 4
+ * Get top 10 most frequently appeared species in the nearby parks of the 100 top-rated Airbnbs that
+ * have trails with popularity less than or equal to 200 (e.g. Photography routes recommendation
+ * with more species and fewer people)
+ *
+ * @param num
+ * @return {string} The SQL query for this search.
+ */
+const speciesForGoodHomes = (num) =>
+  `WITH top_airbnbs AS (
+  SELECT *
+  FROM Airbnb
+  ORDER BY number_of_reviews DESC
+  LIMIT 100
+),
+
+nearby_parks AS (
+  SELECT DISTINCT a.id, p.park_code
+  FROM top_airbnbs a
+  JOIN Park p ON (
+      3958.8 * (2 * ASIN(SQRT(POWER(SIN((RADIANS(a.latitude) - RADIANS(p.latitude)) / 2), 2) +
+                        COS(RADIANS(a.latitude)) * COS(RADIANS(p.latitude)) *
+                        POWER(SIN((RADIANS((a.longitude)) - RADIANS(p.longitude)) / 2), 2))))
+      ) <= 100
+),
+
+species_counts AS (
+  SELECT s.species_id, COUNT(*) AS occurrence_count
+  FROM nearby_parks np
+      JOIN Trail t ON np.park_code = t.park_code
+      JOIN Species s ON t.park_name = s.park_name
+  WHERE t.popularity <= 6
+  GROUP BY s.species_id
+)
+
+SELECT s.species_id, s.common_names, sc.occurrence_count
+FROM Species s
+JOIN species_counts sc ON s.species_id = sc.species_id
+ORDER BY sc.occurrence_count DESC
+LIMIT ${num};`
+
 module.exports = {
   recommendedAirbnbForSpecies,
   recommendedAirbnbInStateForSpecies,
   mostBiodiverseAirbnbs,
+  popularSpecies,
+  speciesForGoodHomes,
 }
