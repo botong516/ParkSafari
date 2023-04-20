@@ -131,8 +131,8 @@ FROM biodiverse_airbnb A1
          JOIN Airbnb A2 ON A1.id = A2.id;`
 
 /**
- * Complex Query 3: Popular species in popular parks
- * Get the top n most popular species in each park that has a trail with popularity >= 6.5731
+ * Complex Query 3: Popular species
+ * Get the top n most popular species in each park that have a trail with popularity >= 6.5731
  *
  * @param num The number of species to return for each park.
  * @return {string} The SQL query for this search.
@@ -154,14 +154,14 @@ WHERE P.ranks <= ${num};`
 
 /**
  * Complex Query 4
- * Get top 10 most frequently appeared species in the nearby parks of the 100 top-rated Airbnbs that
+ * Get top n most frequently appeared species in the nearby parks of the 100 top-rated Airbnbs that
  * have trails with popularity less than or equal to 200 (e.g. Photography routes recommendation
  * with more species and fewer people)
  *
- * @param num
+ * @param num The number of species to return.
  * @return {string} The SQL query for this search.
  */
-const speciesForGoodHomes = (num) =>
+const speciesForPhotographers = (num) =>
   `WITH top_airbnbs AS (
   SELECT *
   FROM Airbnb
@@ -199,5 +199,5 @@ module.exports = {
   recommendedAirbnbInStateForSpecies,
   mostBiodiverseAirbnbs,
   popularSpecies,
-  speciesForGoodHomes,
+  speciesForPhotographers,
 }

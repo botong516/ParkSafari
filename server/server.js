@@ -14,7 +14,7 @@ app.get('/random', routes.random);
 app.get('/recommended-airbnbs', routes.recommendedAirbnbs);
 app.get('/most-biodiverse-airbnbs', routes.mostBiodiverseAirbnbs);
 app.get('/popular-species', routes.popularSpecies);
-app.get('/species-for-good-homes', routes.speciesForGoodHomes);
+app.get('/species-for-photographers', routes.speciesForPhotographers);
 
 app.listen(config.server_port, () => {
   console.log(`Server running at http://${config.server_host}:${config.server_port}/`)

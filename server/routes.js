@@ -82,6 +82,7 @@ const mostBiodiverseAirbnbs = async function (req, res) {
   });
 }
 
+// Route: GET /popular-species
 const popularSpecies = async function (req, res) {
   const num = req.query.num || 10; // default to 10 if num is not provided
 
@@ -95,10 +96,11 @@ const popularSpecies = async function (req, res) {
   });
 }
 
-const speciesForGoodHomes = async function (req, res) {
+// Route: GET /species-for-photographers
+const speciesForPhotographers = async function (req, res) {
   const num = req.query.num || 10; // default to 10 if num is not provided
 
-  connection.query(queries.speciesForGoodHomes(num), (err, data) => {
+  connection.query(queries.speciesForPhotographers(num), (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
       res.json([]);
@@ -114,5 +116,5 @@ module.exports = {
   recommendedAirbnbs,
   mostBiodiverseAirbnbs,
   popularSpecies,
-  speciesForGoodHomes,
+  speciesForPhotographers,
 }
