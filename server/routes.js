@@ -65,8 +65,26 @@ const recommendedAirbnbs = async function (req, res) {
   }
 }
 
+// ROUTE: GET /most-biodiverse-airbnbs
+const mostBiodiverseAirbnbs = async function (req, res) {
+  const state = req.query.state;
+  const neighbourhood = req.query.neighbourhood;
+  const distance = req.query.distance || 100; // default to 100 if distance is not provided
+  const num = req.query.num || 10; // default to 10 if num is not provided
+
+  connection.query(queries.mostBiodiverseAirbnbs(state, neighbourhood, distance, num), (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json([]);
+    } else {
+      res.json(data);
+    }
+  });
+}
+
 module.exports = {
   parks,
   random,
-  recommendedAirbnbs
+  recommendedAirbnbs,
+  mostBiodiverseAirbnbs,
 }

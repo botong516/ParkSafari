@@ -1,27 +1,3 @@
-# Complex Query 2: Most biodiverse airbnb
-# In a specified state and neighbourhood, get the top 10 Airbnbs that have the highest species count in parks within [x] miles of radius
-# Example, state = CA, neighbourhood = Hollywood, distance < 100 miles
-# Expected runtime = 33s
-q2 = `WITH nearby_park AS (SELECT DISTINCT P.park_name,
-                                     P.state,
-                                     A.id
-                     FROM (SELECT * FROM Park WHERE state LIKE '%CA%') P
-                              JOIN (SELECT * FROM Airbnb WHERE neighbourhood = 'Hollywood') A
-                     WHERE ((2 * ASIN(SQRT(POWER(SIN((RADIANS(P.latitude) - RADIANS(A.latitude)) / 2), 2) +
-                                           COS(RADIANS(A.latitude)) * COS(RADIANS(A.latitude)) *
-                                           POWER(SIN((RADIANS((P.longitude)) -
-                                                      RADIANS(A.longitude)) / 2),
-                                                 2)))) < 100)),
-     biodiverse_airbnb AS (SELECT COUNT(S.scientific_name) AS count, P.id
-                           FROM Species S
-                                    JOIN nearby_park P ON S.park_name = P.park_name
-                           GROUP BY P.id
-                           ORDER BY count DESC
-                           LIMIT 10)
-SELECT DISTINCT A2.*, A1.count
-FROM biodiverse_airbnb A1
-         JOIN Airbnb A2 ON A1.id = A2.id;`
-
 """
 Get the top 10 most popular species in each park that has a trail with popularity >= 6.5731
 """

@@ -12,6 +12,7 @@ app.get('/', routes.parks)
 app.get('/parks', routes.parks);
 app.get('/random', routes.random);
 app.get('/recommended-airbnbs', routes.recommendedAirbnbs);
+app.get('/most-biodiverse-airbnbs', routes.mostBiodiverseAirbnbs);
 
 app.listen(config.server_port, () => {
   console.log(`Server running at http://${config.server_host}:${config.server_port}/`)

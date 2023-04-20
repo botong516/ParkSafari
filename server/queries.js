@@ -95,7 +95,43 @@ WHERE ranking < ${num + 1}
 GROUP BY name, distance_to_park, park_name, price, number_of_reviews, city, state, host_name, room_type, minimum_nights, availability_365
 ORDER BY distance_to_park;`
 
+/**
+ * Complex Query 2: Most bio-diverse Airbnbs
+ * In a specified state and neighbourhood, get the top n Airbnbs that have the highest species
+ * count from parks within [x] miles of radius from it.
+ * For example, state = CA, neighbourhood = Hollywood, distance < 100 miles, num = 10
+ *
+ * Expected runtime: 33s
+ *
+ * @param state The 2-letter code of the state of interest.
+ * @param neighbourhood The neighbourhood of interest.
+ * @param distance The maximum distance from the Airbnb to the park in miles.
+ * @param num The number of Airbnbs to return.
+ * @returns The SQL query for this search.
+ */
+const mostBiodiverseAirbnbs = (state, neighbourhood, distance, num) =>
+  `WITH nearby_park AS (SELECT DISTINCT P.park_name,
+                                     P.state,
+                                     A.id
+                     FROM (SELECT * FROM Park WHERE state LIKE '%${state}%') P
+                              JOIN (SELECT * FROM Airbnb WHERE neighbourhood = '${neighbourhood}') A
+                     WHERE ((2 * ASIN(SQRT(POWER(SIN((RADIANS(P.latitude) - RADIANS(A.latitude)) / 2), 2) +
+                                           COS(RADIANS(A.latitude)) * COS(RADIANS(A.latitude)) *
+                                           POWER(SIN((RADIANS((P.longitude)) -
+                                                      RADIANS(A.longitude)) / 2),
+                                                 2)))) < ${distance})),
+     biodiverse_airbnb AS (SELECT COUNT(S.scientific_name) AS count, P.id
+                           FROM Species S
+                                    JOIN nearby_park P ON S.park_name = P.park_name
+                           GROUP BY P.id
+                           ORDER BY count DESC
+                           LIMIT ${num})
+SELECT DISTINCT A2.*, A1.count
+FROM biodiverse_airbnb A1
+         JOIN Airbnb A2 ON A1.id = A2.id;`
+
 module.exports = {
   recommendedAirbnbForSpecies,
-  recommendedAirbnbInStateForSpecies
+  recommendedAirbnbInStateForSpecies,
+  mostBiodiverseAirbnbs,
 }
