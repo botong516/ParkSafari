@@ -1,5 +1,6 @@
 const mysql = require('mysql')
 const config = require('./config.json')
+const queries = require('./queries')
 
 // Creates MySQL connection using database credential provided in config.json
 // Do not edit. If the connection fails, make sure to check that config.json is filled out correctly
@@ -37,7 +38,35 @@ const random = async function (req, res) {
   });
 }
 
+// Route: GET /recommended-airbnbs
+const recommendedAirbnbs = async function (req, res) {
+  const species = req.query.species;
+  const num = req.query.num || 3; // default to 3 if num is not provided
+  const state = req.query.state;
+
+  if (state) {
+    connection.query(queries.recommendedAirbnbInStateForSpecies(species, num, state), (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json([]);
+      } else {
+        res.json(data);
+      }
+    });
+  } else {
+    connection.query(queries.recommendedAirbnbForSpecies(species, num), (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json([]);
+      } else {
+        res.json(data);
+      }
+    });
+  }
+}
+
 module.exports = {
   parks,
-  random
+  random,
+  recommendedAirbnbs
 }

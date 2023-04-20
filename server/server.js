@@ -8,11 +8,10 @@ app.use(cors({
   origin: '*',
 }));
 
-// We use express to define our various API endpoints and
-// provide their handlers that we implemented in routes.js
 app.get('/', routes.parks)
 app.get('/parks', routes.parks);
 app.get('/random', routes.random);
+app.get('/recommended-airbnbs', routes.recommendedAirbnbs);
 
 app.listen(config.server_port, () => {
   console.log(`Server running at http://${config.server_host}:${config.server_port}/`)
