@@ -75,3 +75,12 @@ FROM materialized_view_ranked_species_in_popular_park
 WHERE ranking < 11
 ORDER BY park_name, ranking;`
 
+# Query 4
+# Get top n most frequently appeared species in the nearby parks of the 100 top-rated Airbnbs that
+# have trails with popularity less than or equal to 6 (e.g. Photography routes recommendation
+# with more species and fewer people). Nearby parks are defined as parks within 100 miles of an Airbnb's location.
+# For example, n = 10
+q4 = `SELECT *
+FROM materialized_view_ranked_species_near_top_airbnb
+ORDER BY occurrence_count DESC, species_id
+LIMIT 10;`
