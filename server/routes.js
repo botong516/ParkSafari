@@ -29,15 +29,16 @@ const parks = async function (req, res) {
     ANY_VALUE(p.acres) AS acres, ANY_VALUE(p.longitude) AS longitude, 
     ANY_VALUE(p.latitude) AS latitude, COUNT(s.species_id) AS species_count
     FROM Park p JOIN Species s ON p.park_name = s.park_name
-    WHERE state>='${state_low}' AND state<='${state_high}' AND LOCATE('${name}', park_name) > 0
+    WHERE p.state>='${state_low}' AND p.state<='${state_high}' AND LOCATE('${name}', p.park_name) > 0
     GROUP BY p.park_name
     ORDER BY ${sort} DESC;
     `, (err, data) => {
       if (err || data.length === 0) {
         console.log(err);
-        res.json({});
+        res.json([]);
       } else {
-        res.json({data});
+        console.log(res)
+        res.json(data);
       }
     });
   }
@@ -48,15 +49,15 @@ const parks = async function (req, res) {
     ANY_VALUE(p.acres) AS acres, ANY_VALUE(p.longitude) AS longitude, 
     ANY_VALUE(p.latitude) AS latitude, COUNT(s.species_id) AS species_count
     FROM Park p JOIN Species s ON p.park_name = s.park_name
-    WHERE state>='${state_low}' AND state<='${state_high}' AND LOCATE('${name}', park_name) > 0 AND LOCATE('bird',s.common_names)>0
+    WHERE p.state>='${state_low}' AND p.state<='${state_high}' AND LOCATE('${name}', p.park_name) > 0 AND LOCATE('${species}',s.common_names)>0
     GROUP BY p.park_name
     ORDER BY ${sort} DESC;
     `, (err, data) => {
       if (err || data.length === 0) {
         console.log(err);
-        res.json({});
+        res.json([]);
       } else {
-        res.json({data});
+        res.json(data);
       }
     });
   }
