@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Tab, Tabs, Container, Row, Col } from 'react-bootstrap';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import '../App.css';
+import Section1 from "../Components/discovery_sec1";
 
-const Section1 = () => <div className="discovery-content">Section 1 Content</div>;
 const Section2 = () => <div className="discovery-content">Section 2 Content</div>;
 const Section3 = () => <div className="discovery-content">Section 3 Content</div>;
 const Section4 = () => <div className="discovery-content">Section 4 Content</div>;
@@ -27,7 +27,7 @@ const DiscoveryPage = () => {
               activeKey={activeKey}
               onSelect={handleSelect}
             >
-              <Tab eventKey="section1" title="Section 1" />
+              <Tab eventKey="section1" title="For Photographers" />
               <Tab eventKey="section2" title="Section 2" />
               <Tab eventKey="section3" title="Section 3" />
               <Tab eventKey="section4" title="Section 4" />
