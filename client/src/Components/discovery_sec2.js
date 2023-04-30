@@ -3,7 +3,7 @@ import "./discovery_sec.css";
 import { Box, Container } from '@mui/material';
 
 const config = require('../config.json');
-const Section1 = () => {
+const Section2 = () => {
   const [inputValue, setInputValue] = useState("");
   const [results, setResults] = useState([]);
   const inputRef = useRef();
@@ -27,7 +27,7 @@ const Section1 = () => {
   };
 
   const fetchData = async () => {
-    const response = await fetch(`http://${config.server_host}:${config.server_port}/species-for-photographers?num=${inputValue}`);
+    const response = await fetch(`http://${config.server_host}:${config.server_port}/popular-species?num=${inputValue}`);
     const data = await response.json();
     setResults(data);
   };
@@ -42,9 +42,9 @@ const Section1 = () => {
 
   return (
     <div className="section-container">
-      <h2>Discover Species in Nearby Parks</h2>
+      <h2>Discover Species in Popular Trails</h2>
       <p className="instruction-text">
-        Enter a number below to find the top most frequently appeared species in the nearby parks of the 100 top-rated Airbnbs that have trails with popularity less than or equal to 200.
+        Enter a number below to find the top most popular species in each park that has a trail with popularity at least 6.
       </p>
       <div className="input-container">
         Get top{" "}
@@ -82,8 +82,5 @@ const Section1 = () => {
   );
 };
 
-export default Section1;
+export default Section2;
 
-// {results.map((result, index) => (
-//     <p key={index}>{result}</p>
-//     ))}

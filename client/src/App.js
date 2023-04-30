@@ -13,8 +13,8 @@ function App() {
           <Navbar.Brand as={Link} to="/">
             ParkSafari
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
+          <Navbar.Toggle aria-controls="navbar-nav" />
+          <Navbar.Collapse id="navbar-nav">
             <Nav>
               <Nav.Link as={Link} to="/">
                 Home
