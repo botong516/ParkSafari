@@ -65,3 +65,13 @@ q2 = `WITH nearby_airbnb AS (SELECT *
 SELECT A1.count, A2.*
 FROM biodiverse_airbnb A1
          JOIN Airbnb A2 ON A1.id = A2.id;`
+
+# Query 3
+# Get the top n most popular species in each park that have a trail with popularity >= 6.5731
+# Popularity is determined as the number of parks a species occur in.
+# For example, n = 10
+q3 = `SELECT *
+FROM materialized_view_ranked_species_in_popular_park
+WHERE ranking < 11
+ORDER BY park_name, ranking;`
+
