@@ -76,9 +76,33 @@ function handleSearchContent(event) {
   setSearchInput(event.target.value);
 }
 
+const FloatingParkCard = ({ park, onClose }) => {
+  return (
+    <div className="floating-park-card-overlay">
+      <div className="floating-park-card">
+        {/* Close button */}
+        <button className="close-button" onClick={onClose}>
+          &times;
+        </button>
+
+        {/* Park details */}
+        <h2><span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>{park.park_name}</span></h2>
+        <hr className="separator" />
+        <p>Park Code: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.park_code}</span></p>
+        <p>State: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.state}</span></p>
+        <p>Acres: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.acres}</span></p>
+        <p>Latitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.latitude}</span></p>
+        <p>Longitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.longitude}</span></p>
+        <p>Number of Species: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.species_count}</span></p>
+      </div>
+    </div>
+  );
+};
+
 return (
 
       <Container style={{paddingTop:'10px'}}>
+      {selectedParkId && <FloatingParkCard park={selectedParkId} onClose={() => setSelectedParkId(null)} />}
       <Row>
         <Col sm='2'>
           <Container style={{marginTop:'0px'}} >
