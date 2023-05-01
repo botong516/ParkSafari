@@ -16,3 +16,8 @@ Before running, create `config.json` with the following values:
 ```
 
 To start the server, run `npm install` and `npm start`.
+
+## Frontend
+Make sure backend is running on the host and port specified in `config.json`.
+
+To start the client, run `npm install` and `npm start`.

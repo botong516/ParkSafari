@@ -269,16 +269,19 @@ ORDER BY distance_to_park, park_name, ranking;`
  * @return {string} The SQL query for this search.
  */
 const mostBiodiverseAirbnbs = (state, neighbourhood, distance, num) =>
-  `WITH nearby_park AS (SELECT DISTINCT P.park_name,
-                                     P.state,
-                                     A.id
+  `WITH nearby_park AS (SELECT DISTINCT P.park_name, P.state, A.id
                      FROM (SELECT * FROM Park WHERE state LIKE '%${state}%') P
                               JOIN (SELECT * FROM Airbnb WHERE neighbourhood = '${neighbourhood}') A
-                     WHERE ((2 * ASIN(SQRT(POWER(SIN((RADIANS(P.latitude) - RADIANS(A.latitude)) / 2), 2) +
-                                           COS(RADIANS(A.latitude)) * COS(RADIANS(A.latitude)) *
-                                           POWER(SIN((RADIANS((P.longitude)) -
-                                                      RADIANS(A.longitude)) / 2),
-                                                 2)))) < ${distance})),
+                                   ON EXISTS(
+                                           SELECT 1
+                                           WHERE ((2 *
+                                                   ASIN(SQRT(POWER(SIN((RADIANS(P.latitude) - RADIANS(A.latitude)) / 2), 2) +
+                                                             COS(RADIANS(A.latitude)) * COS(RADIANS(A.latitude)) *
+                                                             POWER(SIN((RADIANS((P.longitude)) -
+                                                                        RADIANS(A.longitude)) / 2),
+                                                                   2)))) < ${distance}
+                                                     )
+                                       )),
      biodiverse_airbnb AS (SELECT COUNT(S.scientific_name) AS count, P.id
                            FROM Species S
                                     JOIN nearby_park P ON S.park_name = P.park_name
