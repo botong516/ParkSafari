@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { Tab, Tabs, Container, Row, Col } from 'react-bootstrap';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import '../App.css';
-
-const Section1 = () => <div className="discovery-content">Section 1 Content</div>;
-const Section2 = () => <div className="discovery-content">Section 2 Content</div>;
-const Section3 = () => <div className="discovery-content">Section 3 Content</div>;
-const Section4 = () => <div className="discovery-content">Section 4 Content</div>;
+import Section1 from "../Components/discovery_sec1";
+import Section2 from "../Components/discovery_sec2";
+import Section3 from "../Components/discovery_sec3";
+import Section4 from "../Components/discovery_sec4";
 
 const DiscoveryPage = () => {
   const navigate = useNavigate();
@@ -27,10 +26,10 @@ const DiscoveryPage = () => {
               activeKey={activeKey}
               onSelect={handleSelect}
             >
-              <Tab eventKey="section1" title="Section 1" />
-              <Tab eventKey="section2" title="Section 2" />
-              <Tab eventKey="section3" title="Section 3" />
-              <Tab eventKey="section4" title="Section 4" />
+              <Tab eventKey="section1" title={<span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>Camera Havens</span>} />
+              <Tab eventKey="section2" title={<span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>BioPop Trails</span>} />
+              <Tab eventKey="section3" title={<span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>Top EcoFriendly Airbnbs</span>} />
+              <Tab eventKey="section4" title={<span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>Airbnbs Near Species Habitat</span>} />
             </Tabs>
           </Col>
           <Col sm={10}>

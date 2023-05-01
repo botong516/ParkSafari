@@ -72,6 +72,21 @@ const parks = async function (req, res) {
   
 }
 
+// Route: GET /all-parks
+const allParks = async function (req, res) {
+  connection.query(`
+    SELECT *
+    FROM Park
+  `, (err, data) => {
+    if (err) {
+      console.log(err);
+      res.json([]);
+    } else {
+      res.json(data);
+    }
+  });
+}
+
 // Route: GET /random
 const random = async function (req, res) {
   connection.query(`
@@ -166,6 +181,7 @@ const speciesForPhotographers = async function (req, res) {
 
 module.exports = {
   parks,
+  allParks,
   random,
   recommendedAirbnbs,
   mostBiodiverseAirbnbs,
