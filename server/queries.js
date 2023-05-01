@@ -44,7 +44,7 @@ WHERE id = ${id};`
  * Get the 50 closest Airbnb listings to the park specified by the given park code sorted by
  * distance, price, and number of reviews.
  *
- * @param parkCode The park code of the park to search for.
+ * @param parkCode The code of the park to search for.
  * @return {string} The SQL query string for this search.
  */
 const airbnbsNearPark = (parkCode) =>
@@ -86,14 +86,14 @@ ORDER BY ${sortBy} ${sortBy === 'park_name' ? 'ASC' : 'DESC'};`
  * Simple Query 6
  * Get the top 20 best rated trails at the given park.
  *
- * @param parkName The name of the park to search for.
+ * @param parkCode The code of the park to search for.
  * @return {string} The SQL query string for this search.
  */
-const trailsForPark = (parkName) =>
+const trailsForPark = (parkCode) =>
   `SELECT Trail.name AS trail_name, Trail.park_name, Trail.length, Trail.avg_rating
 FROM Trail
          INNER JOIN Park ON Trail.park_code = Park.park_code
-WHERE Park.park_name LIKE '%${parkName}%'
+WHERE Park.park_code = '${parkCode}'
 ORDER BY Trail.avg_rating DESC
 LIMIT 20;`
 
