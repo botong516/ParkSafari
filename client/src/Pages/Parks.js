@@ -78,7 +78,7 @@ const ParksPage = () => {
   return (
     <div className="parks">
     <div className="section-container">
-      <h2>Park List</h2>
+      <h2><span style={{fontFamily: "Apple Chancery", fontSize: '50px', fontWeight: 'bold', textShadow: '2px 2px 3px rgba(0, 0, 0, 0.3)',}}>National Parks</span></h2>
       <Container style={flexFormat}>
         {results.map((result, index) => (
           <StyledBox key={result.park_code}>
