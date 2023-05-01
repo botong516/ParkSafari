@@ -10,6 +10,8 @@
  * @param num The number of Airbnbs to return for each park.
  * @return {string} The SQL query string for this search.
  */
+
+
 const recommendedAirbnbForSpecies = (species, num) =>
   `WITH parks AS (SELECT DISTINCT S.park_name, P.longitude, P.latitude
                FROM Park P
