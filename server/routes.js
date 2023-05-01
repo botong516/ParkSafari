@@ -61,8 +61,8 @@ const search = async function (req, res) {
 
 // Route: GET /trails
 const trails = async function (req, res) {
-  let parkName = req.query.park;
-  connection.query(queries.trailsForPark(parkName), (err, data) => {
+  let parkCode = req.query.park;
+  connection.query(queries.trailsForPark(parkCode), (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
       res.json([]);
@@ -100,8 +100,8 @@ const airbnb = async function (req, res) {
 
 // Route: GET /airbnbs
 const airbnbs = async function (req, res) {
-  let parkName = req.query.park;
-  connection.query(queries.airbnbsNearPark(parkName), (err, data) => {
+  let parkCode = req.query.park;
+  connection.query(queries.airbnbsNearPark(parkCode), (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
       res.json([]);
