@@ -24,15 +24,31 @@ const Section1 = () => {
     //     });
     // }, []);
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
+  // const fetchData = async () => {
+  //   const response = await fetch(`http://${config.server_host}:${config.server_port}/species-for-photographers?num=${inputValue}`);
+  //   const data = await response.json();
+  //   setResults(data);
+  // };
+
   const fetchData = async () => {
-    const response = await fetch(`http://${config.server_host}:${config.server_port}/species-for-photographers?num=${inputValue}`);
+    if (inputValue === "") {
+      setErrorMessage("Please enter a number.");
+      return;
+    }
+    setErrorMessage(""); // Clear the error message if there was any
+    const response = await fetch(
+      `http://${config.server_host}:${config.server_port}/species-for-photographers?num=${inputValue}`
+    );
     const data = await response.json();
     setResults(data);
   };
+  
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -82,6 +98,7 @@ const Section1 = () => {
           style={{ width: `${50 + inputValue.length * 10}px`, margin: "10 10px" }}
         />{" "}
         species.
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
         {results && results.length > 0 ? (
         <div>
