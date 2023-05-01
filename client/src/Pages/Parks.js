@@ -40,6 +40,7 @@ const ParksPage = () => {
           <p>Acres: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.acres}</span></p>
           <p>Latitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.latitude}</span></p>
           <p>Longitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.longitude}</span></p>
+          <p>Number of Species: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.species_count}</span></p>
         </div>
       </div>
     );
