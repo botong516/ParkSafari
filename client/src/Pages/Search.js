@@ -79,7 +79,7 @@ function handleSearchChange(event) {
 
 function handleSearchContent(event) {
   setSearchInput(event.target.value);
-  
+
   if(searchBy === 'Name')
   {
     setName(event.target.value);
@@ -93,12 +93,12 @@ function handleSearchContent(event) {
     setStateLow(event.target.value);
     setStateHigh(event.target.value);
   }
-  
+
 }
 
 return (
 
-      <Container style={{paddingTop:'10px'}}> 
+      <Container style={{paddingTop:'10px'}}>
       <Row>
         <Col sm='2'>
           <Container style={{marginTop:'0px'}} >
@@ -113,11 +113,12 @@ return (
             <Row>
             <Form.Label>Sort By:</Form.Label>
             <Form.Select onChange={handleSortChange}>
+              <option value='park_name'>Name</option>
               <option value='acres'>Area</option>
               <option value='species_count'>Species Count</option>
             </Form.Select>
             </Row>
-            
+
           </Container>
         </Col>
         <Col style={{marginTop:'31px'}}>
@@ -128,9 +129,9 @@ return (
             </Button>
           </InputGroup>
 
-            
-        
-        
+
+
+
         </Col>
       </Row>
       <h2 style={{marginTop:'10px'}}>Results</h2>
@@ -143,12 +144,12 @@ return (
         autoHeight
       />
     </Container>
-     
-  
-      
-    
-  
-  
+
+
+
+
+
+
 
 );
 };

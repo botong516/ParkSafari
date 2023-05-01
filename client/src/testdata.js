@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 function TestPage() {
   const [randomNumber, setRandomNumber] = useState(null);
-  const config = require('../config.json');
+  const config = require('config.json');
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/random`)
