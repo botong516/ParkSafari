@@ -74,7 +74,6 @@ const Section4 = () => {
           ref={stateRef}
           value={species}
           onChange={handleSpeciesChange}
-          onKeyPress={handleKeyPress}
           className="text-input"
         />{" "}
         . Get top{" "}
@@ -82,7 +81,6 @@ const Section4 = () => {
           type="number"
           value={num}
           onChange={handleNumChange}
-          onKeyPress={handleKeyPress}
           className="number-input"
           style={{ width: `${50 + num.length * 10}px`, margin: "10 10px" }}
         />{" "}
@@ -91,7 +89,6 @@ const Section4 = () => {
           type="text"
           value={state}
           onChange={(e) => setState(e.target.value)}
-          onKeyPress={handleKeyPress}
           className="text-input"
           style={{ width: `${50 + state.length * 10}px` }}
         />{" "}.{" "}
