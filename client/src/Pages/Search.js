@@ -3,9 +3,31 @@ import { Form,Container,Button,Col,Row,Dropdown, DropdownButton, ButtonGroup, In
 import { useEffect, useState } from 'react';
 import {Link} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import "./ParksPage.css";
+
 const config = require('../config.json');
 
+const FloatingParkCard = ({ park, onClose }) => {
+  return (
+    <div className="floating-park-card-overlay">
+      <div className="floating-park-card">
+        {/* Close button */}
+        <button className="close-button" onClick={onClose}>
+          &times;
+        </button>
 
+        {/* Park details */}
+        <h2><span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>{park.park_name}</span></h2>
+        <hr className="separator" />
+        <p>Park Code: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.park_code}</span></p>
+        <p>State: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.state}</span></p>
+        <p>Acres: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.acres}</span></p>
+        <p>Latitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.latitude}</span></p>
+        <p>Longitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.longitude}</span></p>
+      </div>
+    </div>
+  );
+};
 
 
 const SearchPage = () => {
@@ -44,7 +66,7 @@ const search = () => {
 
 const columns = [
   { field: 'park_name', headerName: 'Park Name', width: 400, renderCell: (params) => (
-      <Link onClick={() => setSelectedParkId(params.row.park_code)}>{params.value}</Link>
+      <Link onClick={() => setSelectedParkId(params.row)}>{params.value}</Link>
   ) },
   { field: 'state', headerName: 'State' },
   { field: 'acres', headerName: 'Acres' },
@@ -123,13 +145,13 @@ return (
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         autoHeight
       />
+      {selectedParkId && (
+        <FloatingParkCard
+          park={selectedParkId}
+          onClose={() => setSelectedParkId(null)}
+        />
+      )}
     </Container>
-
-
-
-
-
-
 
 );
 };
