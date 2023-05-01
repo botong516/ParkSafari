@@ -80,7 +80,7 @@ const Section4 = () => {
       <h2>Discover Top Airbnbs Near Species Habitat</h2>
       <p className="instruction-text">
       For each park where a specific species can be found, get the top 3 best-valued Airbnbs 
-      that are the closest to the park. (Best-valued listing is defined as the Airbnb
+      that are the closest to the park in specific state. (Best-valued listing is defined as the Airbnb
       that is the closest and has at least 150 user reviews.)
       </p>
       <div className="input-container">
@@ -100,7 +100,7 @@ const Section4 = () => {
           className="number-input"
           style={{ width: `${50 + num.length * 10}px`, margin: "10 10px" }}
         />{" "}
-        ranking Airbnbs near{" "}
+        ranking Airbnbs in state{" "}
         <input
           type="text"
           value={state}
