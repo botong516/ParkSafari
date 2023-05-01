@@ -93,7 +93,7 @@ const trailsForPark = (parkName) =>
   `SELECT Trail.name AS trail_name, Trail.park_name, Trail.length, Trail.avg_rating
 FROM Trail
          INNER JOIN Park ON Trail.park_code = Park.park_code
-WHERE Park.park_name LIKE ’ % ${parkName} % ’
+WHERE Park.park_name LIKE '%${parkName}%'
 ORDER BY Trail.avg_rating DESC
 LIMIT 20;`
 
