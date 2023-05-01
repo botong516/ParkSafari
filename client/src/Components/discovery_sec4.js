@@ -23,11 +23,27 @@ const Section4 = () => {
     setNum(e.target.value);
   };
 
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // const fetchData = async () => {
+  //   const response = await fetch(`http://${config.server_host}:${config.server_port}/recommended-airbnbs?species=${species}&num=${num}&state=${state}`);
+  //   const data = await response.json();
+  //   setResults(data);
+  // };
+
   const fetchData = async () => {
-    const response = await fetch(`http://${config.server_host}:${config.server_port}/recommended-airbnbs?species=${species}&num=${num}&state=${state}`);
+    if (species === "" || num === "" || state === "") {
+      setErrorMessage("Please fill in all fields.");
+      return;
+    }
+    setErrorMessage(""); // Clear the error message if there was any
+    const response = await fetch(
+      `http://${config.server_host}:${config.server_port}/recommended-airbnbs?species=${species}&num=${num}&state=${state}`
+    );
     const data = await response.json();
     setResults(data);
   };
+  
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -97,6 +113,7 @@ const Section4 = () => {
         <div className="button-container">
         <button onClick={fetchData}>Search</button>
         </div>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
       {results && results.length > 0 ? (
         <div>
