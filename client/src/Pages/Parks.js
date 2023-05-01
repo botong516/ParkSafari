@@ -35,11 +35,11 @@ const ParksPage = () => {
           {/* Park details */}
           <h2><span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>{park.park_name}</span></h2>
           <hr className="separator" />
-          <p>Code: {park.park_code}</p>
-          <p>State: {park.state}</p>
-          <p>Acres: {park.acres}</p>
-          <p>Latitude: {park.latitude}</p>
-          <p>Longitude: {park.longitude}</p>
+          <p>Park Code: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.park_code}</span></p>
+          <p>State: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.state}</span></p>
+          <p>Acres: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.acres}</span></p>
+          <p>Latitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.latitude}</span></p>
+          <p>Longitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.longitude}</span></p>
         </div>
       </div>
     );
@@ -57,7 +57,7 @@ const ParksPage = () => {
     background: '#aac0dc',
     borderRadius: '16px',
     border: '2px solid #000',
-    padding: theme.spacing(3),
+    padding: theme.spacing(2),
     margin: theme.spacing(2),
   }));
 
