@@ -34,7 +34,6 @@ useEffect(() => {
 
 
 const search = () => {
-  console.log('species in search is: ' + species)
   fetch(`http://${config.server_host}:${config.server_port}/parks?sort=${sort}` +
     `&state_low=${stateLow}&state_high=${stateHigh}` +
     `&name=${name}&species=${species}`
@@ -45,7 +44,7 @@ const search = () => {
       // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
       const parksWithId = resJson.map((park) => ({ id: park.park_code, ...park }));
       setData(parksWithId);
-    });
+    }); setName(''); setSpecies(''); setStateLow('AK'); setStateHigh('WZ');
 }
 
 const columns = [
@@ -124,7 +123,7 @@ return (
         <Col style={{marginTop:'31px'}}>
           <InputGroup>
             <Form.Control type="text" value={searchInput} placeholder="Search" onChange={handleSearchContent}/>
-            <Button onClick={() => search() } variant="outline-secondary" id="button-addon2" >
+            <Button onClick={() => search() } onComp variant="outline-secondary" id="button-addon2" >
               Search
             </Button>
           </InputGroup>
