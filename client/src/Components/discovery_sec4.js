@@ -7,6 +7,7 @@ const config = require('../config.json');
 const Section4 = () => {
   const [species, setSpecies] = useState("");
   const [num, setNum] = useState("");
+  const [state, setState] = useState("");
   const [results, setResults] = useState([]);
   const stateRef = useRef();
 
@@ -23,7 +24,7 @@ const Section4 = () => {
   };
 
   const fetchData = async () => {
-    const response = await fetch(`http://${config.server_host}:${config.server_port}/recommended-airbnbs?species=${species}&num=${num}`);
+    const response = await fetch(`http://${config.server_host}:${config.server_port}/recommended-airbnbs?species=${species}&num=${num}&state=${state}`);
     const data = await response.json();
     setResults(data);
   };
@@ -76,7 +77,7 @@ const Section4 = () => {
           onKeyPress={handleKeyPress}
           className="text-input"
         />{" "}
-        Get top{" "}
+        . Get top{" "}
         <input
           type="number"
           value={num}
@@ -85,8 +86,20 @@ const Section4 = () => {
           className="number-input"
           style={{ width: `${50 + num.length * 10}px`, margin: "10 10px" }}
         />{" "}
-        Airbnbs.
+        ranking Airbnbs near{" "}
+        <input
+          type="text"
+          value={state}
+          onChange={(e) => setState(e.target.value)}
+          onKeyPress={handleKeyPress}
+          className="text-input"
+          style={{ width: `${50 + state.length * 10}px` }}
+        />{" "}.{" "}
+        <br />
+        <br />
+        <div className="button-container">
         <button onClick={fetchData}>Search</button>
+        </div>
       </div>
       {results && results.length > 0 ? (
         <div>

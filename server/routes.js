@@ -101,7 +101,7 @@ const recommendedAirbnbs = async function (req, res) {
   const state = req.query.state;
 
   if (state) {
-    connection.query(queries.recommendedAirbnbInStateForSpecies(species, num, state), (err, data) => {
+    connection.query(queries.recommendedAirbnbInStateForSpeciesOptimized(species, num, state), (err, data) => {
       if (err || data.length === 0) {
         console.log(err);
         res.json([]);
@@ -110,7 +110,7 @@ const recommendedAirbnbs = async function (req, res) {
       }
     });
   } else {
-    connection.query(queries.recommendedAirbnbForSpecies(species, num), (err, data) => {
+    connection.query(queries.recommendedAirbnbForSpeciesOptimized(species, num), (err, data) => {
       if (err || data.length === 0) {
         console.log(err);
         res.json([]);
@@ -128,7 +128,7 @@ const mostBiodiverseAirbnbs = async function (req, res) {
   const distance = req.query.distance || 100; // default to 100 if distance is not provided
   const num = req.query.num || 10; // default to 10 if num is not provided
 
-  connection.query(queries.mostBiodiverseAirbnbs(state, neighbourhood, distance, num), (err, data) => {
+  connection.query(queries.mostBiodiverseAirbnbsOptimized(state, neighbourhood, distance, num), (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
       res.json([]);
@@ -142,7 +142,7 @@ const mostBiodiverseAirbnbs = async function (req, res) {
 const popularSpecies = async function (req, res) {
   const num = req.query.num || 10; // default to 10 if num is not provided
 
-  connection.query(queries.popularSpecies(num), (err, data) => {
+  connection.query(queries.popularSpeciesOptimized(num), (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
       res.json([]);
@@ -156,7 +156,7 @@ const popularSpecies = async function (req, res) {
 const speciesForPhotographers = async function (req, res) {
   const num = req.query.num || 10; // default to 10 if num is not provided
 
-  connection.query(queries.speciesForPhotographers(num), (err, data) => {
+  connection.query(queries.speciesForPhotographersOptimized(num), (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
       res.json([]);

@@ -44,5 +44,11 @@
     margin-bottom: 10px;
   }
 
-
+  .button-container {
+    text-align: center;
+  }
+  
+  button {
+    cursor: pointer;
+  }
   

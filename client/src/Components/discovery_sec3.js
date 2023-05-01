@@ -111,7 +111,11 @@ const Section3 = () => {
           style={{ width: `${50 + num.length * 10}px`, margin: "10 10px" }}
         />{" "}
         Airbnbs.
+        <br />
+        <br />
+        <div className="button-container">
         <button onClick={fetchData}>Search</button>
+        </div>
       </div>
       {results && results.length > 0 ? (
         <div>

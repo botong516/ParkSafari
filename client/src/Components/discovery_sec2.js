@@ -81,7 +81,7 @@ const Section2 = () => {
           className="number-input"
           style={{ width: `${50 + inputValue.length * 10}px`, margin: "10 10px" }}
         />{" "}
-        species.
+        ranking species.
       </div>
         {results && results.length > 0 ? (
         <div>
@@ -111,7 +111,7 @@ const Section2 = () => {
             </TableRow>
             <TableRow>
               <StyledTableCell variant="head">Rank:</StyledTableCell>
-              <StyledValueCell>{result.ranks}</StyledValueCell>
+              <StyledValueCell>{result.ranking}</StyledValueCell>
             </TableRow>
           </TableBody>
         </Table>
