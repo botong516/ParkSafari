@@ -8,9 +8,8 @@ app.use(cors({
   origin: '*',
 }));
 
-app.get('/', routes.parks)
+app.get('/', routes.index)
 app.get('/parks', routes.parks);
-app.get('/all-parks', routes.allParks); // Parks page
 app.get('/random', routes.random);
 app.get('/recommended-airbnbs', routes.recommendedAirbnbs);
 app.get('/most-biodiverse-airbnbs', routes.mostBiodiverseAirbnbs);

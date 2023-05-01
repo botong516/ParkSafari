@@ -1,24 +1,4 @@
-# Simple Queries
-# Get the list of all national parks sorted by name
-q5 = `SELECT park_name
-FROM Park
-ORDER BY park_name;`
-
-# Get the list of all national parks sorted by area
-q6 = `
-SELECT park_name, acres
-FROM Park
-ORDER BY acres;
-`
-
-# Get the list of all national parks sorted by species count
-q7 = `
-SELECT p.park_name, COUNT(s.species_id) AS species_count
-FROM Park p
-         JOIN Species s ON p.park_name = s.park_name
-GROUP BY p.park_name
-ORDER BY species_count DESC;
-`
+## TODO: add park detail, trail detail queries
 
 # A sample filtering of trails: get the list of all trails where the corresponding park name
 # includes ”Preserve” and the length is between 5000 and 10000, sorted by average ratings
@@ -39,55 +19,6 @@ FROM Park p
          JOIN Species s ON p.park_name = s.park_name
 WHERE p.park_name LIKE 'Yellowstone National Park'
 ORDER BY s.category;
-`
-
-# Get all parks where visitors can observe at least 10% species from ”Bird” category
-q10 = `
-SELECT b.park_name, b.scientific_name AS species_name
-FROM (SELECT p.park_code, s.species_id
-      FROM Park p
-               JOIN Species s ON p.park_name = s.park_name
-      WHERE s.category = 'Algae'
-      GROUP BY p.park_code
-      HAVING 10 * COUNT(DISTINCT s.species_id) >=
-             (SELECT COUNT(DISTINCT species_id) FROM Species WHERE category = 'Algae')) a
-         JOIN Species b ON a.species_id = b.species_id;
-`
-
-# Get all trails where visitors can observe at least 10% species from ”Bird” category
-q11 =`
-SELECT b.trail_name, b.park_name, c.scientific_name
-FROM (SELECT t.name AS trail_name, a.park_name, a.species_id
-      FROM (SELECT p.park_code, p.park_name, s.species_id
-            FROM Park p
-                     JOIN Species s ON p.park_name = s.park_name
-            WHERE s.category = 'Algae'
-            GROUP BY p.park_code, p.park_name
-            HAVING 10 * COUNT(DISTINCT s.species_id) >=
-                   (SELECT COUNT(DISTINCT species_id) FROM Species WHERE category = 'Algae')) a
-               JOIN Trail t ON a.park_code = t.park_code) b
-         JOIN Species c ON b.species_id = c.species_id
-ORDER BY b.trail_name;
-`
-
-# Get parks where visitors can observe species from all categories
-q12 = `
-SELECT Park.park_code, Park.park_name
-FROM Park
-         JOIN Species ON Park.park_name = Species.park_name
-GROUP BY Park.park_name HAV- ING COUNT(DISTINCT category) = ( SELECT COUNT(DISTINCT category) FROM Species );
-`
-
-# Get trails where visitors can observe species from all categories
-q13=`
-SELECT t.name AS trail_name, a.park_name
-FROM (SELECT Park.park_code, Park.park_name
-      FROM Park
-               JOIN Species ON Park.park_name = Species.park_name
-      GROUP BY Park.park_name
-      HAVING COUNT(DISTINCT category) = (SELECT COUNT(DISTINCT category) FROM Species)) a
-         JOIN Trail t ON a.park_code = t.park_code
-ORDER BY park_name;
 `
 
 # Get all trails where a specific species can be observed

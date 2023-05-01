@@ -14,7 +14,7 @@ const ParksPage = () => {
   }, []);
 
   const fetchData = async () => {
-    const response = await fetch(`http://${config.server_host}:${config.server_port}/all-parks`);
+    const response = await fetch(`http://${config.server_host}:${config.server_port}/parks`);
     const data = await response.json();
     setResults(data);
   };
@@ -31,7 +31,7 @@ const ParksPage = () => {
           <button className="close-button" onClick={onClose}>
             &times;
           </button>
-  
+
           {/* Park details */}
           <h2><span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>{park.park_name}</span></h2>
           <hr className="separator" />
@@ -44,7 +44,7 @@ const ParksPage = () => {
       </div>
     );
   };
-  
+
 
   const flexFormat = {
     display: 'flex',
@@ -118,7 +118,7 @@ const ParksPage = () => {
       )}
     </div>
     </div>
-  );  
+  );
 };
 
 export default ParksPage;

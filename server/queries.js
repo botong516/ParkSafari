@@ -1,4 +1,17 @@
 /**
+ * Get all national parks sorted by a given criterion.
+ * @param sortBy The criterion to sort by. Must be name (alphabetical), area (descending), or
+ * species_count (descending).
+ * @return {string} The SQL query string for this search.
+ */
+const allParks = (sortBy) =>
+  `SELECT p.park_code, p.park_name, p.state, p.acres, p.latitude, p.longitude, COUNT(s.species_id) AS species_count
+FROM Park p
+         JOIN Species s ON p.park_name = s.park_name
+GROUP BY p.park_name
+ORDER BY ${sortBy} ${sortBy === 'park_name' ? 'ASC' : 'DESC'};`
+
+/**
  * Complex Query 1
  * For each of the national parks where a specific species can be found, get the top 3 best-valued
  * Airbnb listings that are the closest to this park. Best-valued listing is defined as the Airbnb
@@ -197,6 +210,7 @@ ORDER BY sc.occurrence_count DESC
 LIMIT ${num};`
 
 module.exports = {
+  allParks,
   recommendedAirbnbForSpecies,
   recommendedAirbnbInStateForSpecies,
   mostBiodiverseAirbnbs,
