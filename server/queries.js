@@ -67,7 +67,8 @@ LIMIT 50;`
  * For each of the national parks where a specific species can be found, get the top 3 best-valued
  * Airbnb listings that are the closest to this park. Best-valued listing is defined as the Airbnb
  * that is the closest and has at least 150 user reviews.
- *
+ * For example, species =seal, num = 3.
+ * 
  * Expected runtime: 24s.
  *
  * @param species A common name for the species of interest.
@@ -114,10 +115,39 @@ GROUP BY name, distance_to_park, park_name, price, number_of_reviews, city, stat
 ORDER BY distance_to_park;`
 
 /**
+ * Complex Query 1A Optimized*
+ * Expected runtime: 550ms.
+ *
+ * @param species A common name for the species of interest.
+ * @param num The number of Airbnbs to return for each park.
+ * @return {string} The SQL query string for this search.
+ */
+const recommendedAirbnbForSpeciesOptimized = (species, num) =>
+`SELECT P.*
+FROM (SELECT name,
+             distance_to_park,
+             park_name,
+             price,
+             number_of_reviews,
+             city,
+             state,
+             host_name,
+             room_type,
+             minimum_nights,
+             availability_365,
+             ranking
+      FROM materialized_view_ranked_airbnb_near_park
+      WHERE ranking < ${num + 1}) P
+WHERE park_name IN (SELECT DISTINCT park_name
+                    FROM Species
+                    WHERE common_names LIKE '%${species}%')
+ORDER BY distance_to_park, park_name, ranking;`
+
+/**
  * For each of the national parks in a specific state where a specific species can be found, get the
  * top 3 best-valued Airbnb listings that are the closest to this park. Best-valued listing is
  * defined as the Airbnb that is the closest and has at least 150 user reviews.
- *
+ * For example, state = CA, species =seal, num = 3. 
  * Expected runtime: 8s.
  *
  * @param species A common name for the species of interest.
@@ -162,6 +192,34 @@ GROUP BY name, distance_to_park, park_name, price, number_of_reviews, city, stat
 ORDER BY distance_to_park;`
 
 /**
+ * Complex Query 1A Optimized*
+ * Expected runtime: 500ms.
+ *
+* @param species A common name for the species of interest.
+ * @param num The number of Airbnbs to return for each park.
+ * @param state The 2-letter code of the state of interest.
+ * @return {string} The SQL query for this search.
+ */
+const recommendedAirbnbInStateForSpeciesOptimized = (species, num, state) =>
+`SELECT name,
+distance_to_park,
+park_name,
+price,
+number_of_reviews,
+city,
+state,
+host_name,
+room_type,
+minimum_nights,
+availability_365,
+ranking
+FROM (SELECT * FROM materialized_view_ranked_airbnb_near_park WHERE state LIKE '%${state}%' AND ranking < ${num + 1}) P
+WHERE park_name IN (SELECT DISTINCT park_name
+             FROM Species
+             WHERE common_names LIKE '%${species}%')
+ORDER BY distance_to_park, park_name, ranking;`
+
+/**
  * Complex Query 2: Most bio-diverse Airbnbs
  * In a specified state and neighbourhood, get the top n Airbnbs that have the highest species
  * count from parks within [x] miles of radius from it.
@@ -197,8 +255,37 @@ FROM biodiverse_airbnb A1
          JOIN Airbnb A2 ON A1.id = A2.id;`
 
 /**
+ * Complex Query 2 Optimized
+ * Expected runtime: 2s
+ *
+ * @param state The 2-letter code of the state of interest.
+ * @param neighbourhood The neighbourhood of interest.
+ * @param distance The maximum distance from the Airbnb to the park in miles.
+ * @param num The number of Airbnbs to return.
+ * @return {string} The SQL query for this search.
+ */
+const mostBiodiverseAirbnbsOptimized = (state, neighbourhood, distance, num) =>
+`WITH nearby_airbnb AS (SELECT *
+  FROM materialized_view_ranked_airbnb_near_park
+  WHERE state LIKE '%${state}%'
+    AND distance_to_park < ${distance}
+    AND neighbourhood = '${neighbourhood}'),
+biodiverse_airbnb AS (SELECT COUNT(S.scientific_name) AS count, A.id
+      FROM Species S
+               JOIN nearby_airbnb A ON A.park_name = S.park_name
+      GROUP BY A.id
+      ORDER BY count DESC
+      LIMIT ${num})
+SELECT A1.count, A2.*
+FROM biodiverse_airbnb A1
+JOIN Airbnb A2 ON A1.id = A2.id;`
+
+
+/**
  * Complex Query 3: Popular species
  * Get the top n most popular species in each park that have a trail with popularity >= 6.5731
+ * For example, n = 10
+ * Expected runtime: 46s
  *
  * @param num The number of species to return for each park.
  * @return {string} The SQL query for this search.
@@ -219,10 +306,27 @@ FROM popular_park_species P
 WHERE P.ranks <= ${num};`
 
 /**
+ * Complex Query 3 Optimized
+ * xpected runtime: 500ms
+ *
+ * @param num The number of species to return for each park.
+ * @return {string} The SQL query for this search.
+ */
+const popularSpeciesOptimized = (num) =>
+`SELECT *
+FROM materialized_view_ranked_species_in_popular_park
+WHERE ranking < ${num}
+ORDER BY park_name, ranking;`
+
+
+
+/**
  * Complex Query 4
  * Get top n most frequently appeared species in the nearby parks of the 100 top-rated Airbnbs that
  * have trails with popularity less than or equal to 200 (e.g. Photography routes recommendation
  * with more species and fewer people)
+ * For example, n = 10
+ * Estimiated runtime: 29s
  *
  * @param num The number of species to return.
  * @return {string} The SQL query for this search.
@@ -260,14 +364,34 @@ JOIN species_counts sc ON s.species_id = sc.species_id
 ORDER BY sc.occurrence_count DESC
 LIMIT ${num};`
 
+/**
+ * Complex Query 4 Optimized
+ * For example, n = 10
+ * Estimiated runtime: 450ms
+ *
+ * @param num The number of species to return.
+ * @return {string} The SQL query for this search.
+ */
+const speciesForPhotographersOptimized = (num) =>
+`SELECT *
+FROM materialized_view_ranked_species_near_top_airbnb
+ORDER BY occurrence_count DESC, species_id
+LIMIT ${num};`
+
+
 module.exports = {
   allParks,
   allSpeciesAtPark,
   airbnbInfo,
   airbnbsNearPark,
   recommendedAirbnbForSpecies,
+  recommendedAirbnbForSpeciesOptimized,
   recommendedAirbnbInStateForSpecies,
+  recommendedAirbnbInStateForSpeciesOptimized,
   mostBiodiverseAirbnbs,
+  mostBiodiverseAirbnbsOptimized,
   popularSpecies,
+  popularSpeciesOptimized,
   speciesForPhotographers,
+  speciesForPhotographersOptimized
 }
