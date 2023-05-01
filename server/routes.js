@@ -35,6 +35,31 @@ const parks = async function (req, res) {
   });
 }
 
+// Route: GET /search
+const search = async function (req, res) {
+  let sort = req.query.sort;
+  let searchBy = req.query.searchBy;
+  let searchTerm = req.query.searchTerm;
+  let validSorts = ['park_name', 'acres', 'species_count'];
+  let validSearch = ['park_name', 'state', 'species'];
+  if (!sort || !validSorts.includes(sort)) {
+    sort = 'park_name';
+  }
+  if (!searchBy || !validSearch.includes(searchBy)) {
+    searchBy = 'park_name';
+  }
+
+  connection.query(queries.searches(searchBy, sort, searchTerm), (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json([]);
+    } else {
+      res.json(data);
+    }
+  });
+}
+
+
 // Route: GET /species
 const species = async function (req, res) {
   let parkName = req.query.park;
@@ -169,6 +194,7 @@ const speciesForPhotographers = async function (req, res) {
 module.exports = {
   index,
   parks,
+  search,
   species,
   airbnb,
   airbnbs,

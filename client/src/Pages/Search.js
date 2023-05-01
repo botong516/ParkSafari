@@ -13,10 +13,6 @@ const SearchPage = () => {
 const [data, setData] = useState([]);
 const [pageSize, setPageSize] = useState(10);
 const [sort, setSort] = useState('');
-const [stateLow, setStateLow] = useState('AK');
-const [stateHigh, setStateHigh] = useState('WZ');
-const [name, setName] = useState('');
-const [species, setSpecies] = useState('');
 const [searchInput, setSearchInput] = useState('');
 const [searchBy, setSearchBy] = useState('Name');
 const [selectedParkId, setSelectedParkId] = useState(null);
@@ -34,9 +30,8 @@ useEffect(() => {
 
 
 const search = () => {
-  fetch(`http://${config.server_host}:${config.server_port}/parks?sort=${sort}` +
-    `&state_low=${stateLow}&state_high=${stateHigh}` +
-    `&name=${name}&species=${species}`
+  fetch(`http://${config.server_host}:${config.server_port}/search?sort=${sort}` +
+    `&searchBy=${searchBy}&searchTerm=${searchInput}`
   )
     .then(res => res.json())
     .then(resJson => {
@@ -44,7 +39,7 @@ const search = () => {
       // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
       const parksWithId = resJson.map((park) => ({ id: park.park_code, ...park }));
       setData(parksWithId);
-    }); setName(''); setSpecies(''); setStateLow('AK'); setStateHigh('WZ');
+    });
 }
 
 const columns = [
@@ -65,35 +60,20 @@ function handleSortChange(event) {
 function handleSearchChange(event) {
   if(event.target.value === 'park')
   {
-    setSearchBy('Name');
+    setSearchBy('park_name');
   }
-  else if(event.target.value === 'species')
+  else if(event.target.value === 'state')
   {
-    setSearchBy('Species');
+    setSearchBy('state');
   }
   else
   {
-    setSearchBy('State');
+    setSearchBy('species');
   }
 }
 
 function handleSearchContent(event) {
   setSearchInput(event.target.value);
-
-  if(searchBy === 'Name')
-  {
-    setName(event.target.value);
-  }
-  else if(searchBy === 'Species')
-  {
-    setSpecies(event.target.value);
-  }
-  else
-  {
-    setStateLow(event.target.value);
-    setStateHigh(event.target.value);
-  }
-
 }
 
 return (
