@@ -63,6 +63,27 @@ ORDER BY distance, price, number_of_reviews
 LIMIT 50;`
 
 /**
+ * Simple Query 5
+ * Search for a park by name, state, or species observed sorted by the given criterion.
+ * 
+ * 
+ * @param searchBy The criterion to search by. Must be park_name, state, or species.
+ * @param sortBy The criterion to sort by. Must be name (alphabetical), area (descending), or
+ * species_count (descending)
+ * @param searchTerm The term to search for.
+ * @return {string} The SQL query string for this search.
+ */
+const searches = (searchBy, sortBy,searchTerm) =>
+`SELECT ANY_VALUE(p.park_code) AS park_code, p.park_name, ANY_VALUE(p.state) AS state, 
+ANY_VALUE(p.acres) AS acres, ANY_VALUE(p.longitude) AS longitude, 
+ANY_VALUE(p.latitude) AS latitude, COUNT(s.species_id) AS species_count
+FROM Park p JOIN Species s ON p.park_name = s.park_name
+WHERE ${searchBy==='park_name' ? 'p.park_name' : searchBy==='state' ? 'p.state' : 's.common_names'} LIKE '%${searchTerm}%'
+GROUP BY p.park_name
+ORDER BY ${sortBy} ${sortBy === 'park_name' ? 'ASC' : 'DESC'};`
+
+
+/**
  * Complex Query 1
  * For each of the national parks where a specific species can be found, get the top 3 best-valued
  * Airbnb listings that are the closest to this park. Best-valued listing is defined as the Airbnb
@@ -384,6 +405,7 @@ module.exports = {
   allSpeciesAtPark,
   airbnbInfo,
   airbnbsNearPark,
+  searches,
   recommendedAirbnbForSpecies,
   recommendedAirbnbForSpeciesOptimized,
   recommendedAirbnbInStateForSpecies,
