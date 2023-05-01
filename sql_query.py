@@ -1,4 +1,4 @@
-## TODO: add park detail, trail detail queries
+## TODO: add trail detail queries
 
 # A sample filtering of trails: get the list of all trails where the corresponding park name
 # includes ”Preserve” and the length is between 5000 and 10000, sorted by average ratings
@@ -10,15 +10,6 @@ WHERE Park.park_name LIKE ’ % Preserve % ’
   AND Trail.length > 5000
   AND Trail.length < 10000
 ORDER BY Trail.avg_rating DESC;
-`
-
-# Get all species at a given park (ordered by category), i.e. Yellowstone National Park
-q9 = `
-SELECT p.park_name, s.scientific_name, s.category
-FROM Park p
-         JOIN Species s ON p.park_name = s.park_name
-WHERE p.park_name LIKE 'Yellowstone National Park'
-ORDER BY s.category;
 `
 
 # Get all trails where a specific species can be observed

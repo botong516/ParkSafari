@@ -35,6 +35,19 @@ const parks = async function (req, res) {
   });
 }
 
+// Route: GET /species
+const species = async function (req, res) {
+  let parkName = req.query.park;
+  connection.query(queries.allSpeciesAtPark(parkName), (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json([]);
+    } else {
+      res.json(data);
+    }
+  });
+}
+
 // Route: GET /random
 const random = async function (req, res) {
   connection.query(`
@@ -130,6 +143,7 @@ const speciesForPhotographers = async function (req, res) {
 module.exports = {
   index,
   parks,
+  species,
   random,
   recommendedAirbnbs,
   mostBiodiverseAirbnbs,

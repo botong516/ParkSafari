@@ -1,5 +1,7 @@
 /**
+ * Simple Query 1
  * Get all national parks sorted by a given criterion.
+ *
  * @param sortBy The criterion to sort by. Must be name (alphabetical), area (descending), or
  * species_count (descending).
  * @return {string} The SQL query string for this search.
@@ -10,6 +12,20 @@ FROM Park p
          JOIN Species s ON p.park_name = s.park_name
 GROUP BY p.park_name
 ORDER BY ${sortBy} ${sortBy === 'park_name' ? 'ASC' : 'DESC'};`
+
+/**
+ * Simple Query 2
+ * Get all species at the given park.
+ *
+ * @param parkName The name of the park to search for.
+ * @return {string} The SQL query string for this search.
+ */
+const allSpeciesAtPark = (parkName) =>
+  `SELECT p.park_name, s.scientific_name, s.category
+FROM Park p
+         JOIN Species s ON p.park_name = s.park_name
+WHERE p.park_name LIKE '${parkName}'
+ORDER BY s.category;`
 
 /**
  * Complex Query 1
@@ -211,6 +227,7 @@ LIMIT ${num};`
 
 module.exports = {
   allParks,
+  allSpeciesAtPark,
   recommendedAirbnbForSpecies,
   recommendedAirbnbInStateForSpecies,
   mostBiodiverseAirbnbs,
