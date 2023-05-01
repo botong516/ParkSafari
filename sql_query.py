@@ -20,29 +20,6 @@ FROM Species S
 WHERE LOCATE('user_input', common_names) > 0;
 `
 
-# Get the information about a specific Airbnb listing
-q15=`
-SELECT *
-FROM Airbnb
-WHERE id = 2708;
-`
-
-# Get the 50 closest Airbnb listings to the specified park (park_code = 'ARCH') sorted first by distance then by price and number of reviews.
-q16=`
-SELECT *,
-       3958.8 * (2 * ASIN(SQRT(POWER(SIN((RADIANS((SELECT latitude
-                                                   FROM Park
-                                                   WHERE park_code = 'ARCH')) - RADIANS(Airbnb.latitude)) / 2), 2) +
-                               COS(RADIANS(Airbnb.latitude)) * COS(RADIANS((SELECT latitude
-                                                                            FROM Park
-                                                                            WHERE park_code = 'ARCH'))) *
-                               POWER(SIN((RADIANS((SELECT longitude FROM Park WHERE park_code = 'ARCH')) -
-                                          RADIANS(Airbnb.longitude)) / 2),
-                                     2)))) AS distance
-FROM Airbnb
-ORDER BY distance, price, number_of_reviews
-LIMIT 50;
-`
 # Get the 50 closest Airbnb listings near a specific trail (trail_id = 10039522) sorted first by distance then by price and number of reviews.
 q17=`
 SELECT *,

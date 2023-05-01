@@ -48,6 +48,32 @@ const species = async function (req, res) {
   });
 }
 
+// Route: GET /airbnb
+const airbnb = async function (req, res) {
+  let airbnbId = req.query.id;
+  connection.query(queries.airbnbInfo(airbnbId), (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      res.json(data[0]);
+    }
+  });
+}
+
+// Route: GET /airbnbs
+const airbnbs = async function (req, res) {
+  let parkCode = req.query.park_code;
+  connection.query(queries.airbnbsNearPark(parkCode), (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json([]);
+    } else {
+      res.json(data);
+    }
+  });
+}
+
 // Route: GET /random
 const random = async function (req, res) {
   connection.query(`
@@ -144,6 +170,8 @@ module.exports = {
   index,
   parks,
   species,
+  airbnb,
+  airbnbs,
   random,
   recommendedAirbnbs,
   mostBiodiverseAirbnbs,

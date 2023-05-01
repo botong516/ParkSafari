@@ -28,6 +28,41 @@ WHERE p.park_name LIKE '${parkName}'
 ORDER BY s.category;`
 
 /**
+ * Simple Query 3
+ * Get the information about a specific Airbnb listing.
+ *
+ * @param id The id of the Airbnb listing to search for.
+ * @return {string} The SQL query string for this search.
+ */
+const airbnbInfo = (id) =>
+  `SELECT *
+FROM Airbnb
+WHERE id = ${id};`
+
+/**
+ * Simple Query 4
+ * Get the 50 closest Airbnb listings to the park specified by the given park code sorted by
+ * distance, price, and number of reviews.
+ *
+ * @param parkCode The park code of the park to search for.
+ * @return {string} The SQL query string for this search.
+ */
+const airbnbsNearPark = (parkCode) =>
+  `SELECT *,
+       3958.8 * (2 * ASIN(SQRT(POWER(SIN((RADIANS((SELECT latitude
+                                                   FROM Park
+                                                   WHERE park_code = '${parkCode}')) - RADIANS(Airbnb.latitude)) / 2), 2) +
+                               COS(RADIANS(Airbnb.latitude)) * COS(RADIANS((SELECT latitude
+                                                                            FROM Park
+                                                                            WHERE park_code = '${parkCode}'))) *
+                               POWER(SIN((RADIANS((SELECT longitude FROM Park WHERE park_code = '${parkCode}')) -
+                                          RADIANS(Airbnb.longitude)) / 2),
+                                     2)))) AS distance
+FROM Airbnb
+ORDER BY distance, price, number_of_reviews
+LIMIT 50;`
+
+/**
  * Complex Query 1
  * For each of the national parks where a specific species can be found, get the top 3 best-valued
  * Airbnb listings that are the closest to this park. Best-valued listing is defined as the Airbnb
@@ -228,6 +263,8 @@ LIMIT ${num};`
 module.exports = {
   allParks,
   allSpeciesAtPark,
+  airbnbInfo,
+  airbnbsNearPark,
   recommendedAirbnbForSpecies,
   recommendedAirbnbInStateForSpecies,
   mostBiodiverseAirbnbs,
