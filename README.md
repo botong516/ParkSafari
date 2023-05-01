@@ -16,3 +16,6 @@ Before running, create `config.json` with the following values:
 ```
 
 To start the server, run `npm install` and `npm start`.
+
+## Frontend
+To start the client, run `npm install` and `npm start`.
