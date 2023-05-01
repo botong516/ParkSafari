@@ -65,16 +65,16 @@ LIMIT 50;`
 /**
  * Simple Query 5
  * Search for a park by name, state, or species observed sorted by the given criterion.
- * 
- * 
+ *
+ *
  * @param searchBy The criterion to search by. Must be park_name, state, or species.
  * @param sortBy The criterion to sort by. Must be name (alphabetical), area (descending), or
  * species_count (descending)
  * @param searchTerm The term to search for.
  * @return {string} The SQL query string for this search.
  */
-const searches = (searchBy, sortBy,searchTerm) =>
-`SELECT ANY_VALUE(p.park_code) AS park_code, p.park_name, ANY_VALUE(p.state) AS state, 
+const searches = (searchBy, sortBy, searchTerm) =>
+  `SELECT ANY_VALUE(p.park_code) AS park_code, p.park_name, ANY_VALUE(p.state) AS state, 
 ANY_VALUE(p.acres) AS acres, ANY_VALUE(p.longitude) AS longitude, 
 ANY_VALUE(p.latitude) AS latitude, COUNT(s.species_id) AS species_count
 FROM Park p JOIN Species s ON p.park_name = s.park_name
@@ -82,6 +82,20 @@ WHERE ${searchBy==='park_name' ? 'p.park_name' : searchBy==='state' ? 'p.state' 
 GROUP BY p.park_name
 ORDER BY ${sortBy} ${sortBy === 'park_name' ? 'ASC' : 'DESC'};`
 
+/**
+ * Simple Query 6
+ * Get the top 20 best rated trails at the given park.
+ *
+ * @param parkName The name of the park to search for.
+ * @return {string} The SQL query string for this search.
+ */
+const trailsForPark = (parkName) =>
+  `SELECT Trail.name AS trail_name, Trail.park_name, Trail.length, Trail.avg_rating
+FROM Trail
+         INNER JOIN Park ON Trail.park_code = Park.park_code
+WHERE Park.park_name LIKE ’ % ${parkName} % ’
+ORDER BY Trail.avg_rating DESC
+LIMIT 20;`
 
 /**
  * Complex Query 1
@@ -89,7 +103,7 @@ ORDER BY ${sortBy} ${sortBy === 'park_name' ? 'ASC' : 'DESC'};`
  * Airbnb listings that are the closest to this park. Best-valued listing is defined as the Airbnb
  * that is the closest and has at least 150 user reviews.
  * For example, species =seal, num = 3.
- * 
+ *
  * Expected runtime: 24s.
  *
  * @param species A common name for the species of interest.
@@ -144,7 +158,7 @@ ORDER BY distance_to_park;`
  * @return {string} The SQL query string for this search.
  */
 const recommendedAirbnbForSpeciesOptimized = (species, num) =>
-`SELECT P.*
+  `SELECT P.*
 FROM (SELECT name,
              distance_to_park,
              park_name,
@@ -168,7 +182,7 @@ ORDER BY distance_to_park, park_name, ranking;`
  * For each of the national parks in a specific state where a specific species can be found, get the
  * top 3 best-valued Airbnb listings that are the closest to this park. Best-valued listing is
  * defined as the Airbnb that is the closest and has at least 150 user reviews.
- * For example, state = CA, species =seal, num = 3. 
+ * For example, state = CA, species =seal, num = 3.
  * Expected runtime: 8s.
  *
  * @param species A common name for the species of interest.
@@ -216,13 +230,13 @@ ORDER BY distance_to_park;`
  * Complex Query 1A Optimized*
  * Expected runtime: 500ms.
  *
-* @param species A common name for the species of interest.
+ * @param species A common name for the species of interest.
  * @param num The number of Airbnbs to return for each park.
  * @param state The 2-letter code of the state of interest.
  * @return {string} The SQL query for this search.
  */
 const recommendedAirbnbInStateForSpeciesOptimized = (species, num, state) =>
-`SELECT name,
+  `SELECT name,
 distance_to_park,
 park_name,
 price,
@@ -286,7 +300,7 @@ FROM biodiverse_airbnb A1
  * @return {string} The SQL query for this search.
  */
 const mostBiodiverseAirbnbsOptimized = (state, neighbourhood, distance, num) =>
-`WITH nearby_airbnb AS (SELECT *
+  `WITH nearby_airbnb AS (SELECT *
   FROM materialized_view_ranked_airbnb_near_park
   WHERE state LIKE '%${state}%'
     AND distance_to_park < ${distance}
@@ -334,11 +348,10 @@ WHERE P.ranks <= ${num};`
  * @return {string} The SQL query for this search.
  */
 const popularSpeciesOptimized = (num) =>
-`SELECT *
+  `SELECT *
 FROM materialized_view_ranked_species_in_popular_park
 WHERE ranking < ${num}
 ORDER BY park_name, ranking;`
-
 
 
 /**
@@ -394,7 +407,7 @@ LIMIT ${num};`
  * @return {string} The SQL query for this search.
  */
 const speciesForPhotographersOptimized = (num) =>
-`SELECT *
+  `SELECT *
 FROM materialized_view_ranked_species_near_top_airbnb
 ORDER BY occurrence_count DESC, species_id
 LIMIT ${num};`
@@ -406,6 +419,7 @@ module.exports = {
   airbnbInfo,
   airbnbsNearPark,
   searches,
+  trailsForPark,
   recommendedAirbnbForSpecies,
   recommendedAirbnbForSpeciesOptimized,
   recommendedAirbnbInStateForSpecies,
