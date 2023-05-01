@@ -15,12 +15,21 @@ connection.connect((err) => err && console.log(err));
 
 // Route: GET /parks
 const parks = async function (req, res) {
-  const sort = req.query.sort ?? 'acres';
+  let sort = req.query.sort;
   const state_low = req.query.state_low ?? 'AK';
   const state_high = req.query.state_high ?? 'WZ';
-  const name = req.query.name ?? 'Park';
+  let name = req.query.name ?? 'Park';
   const species = req.query.species ?? '';
   
+  if(name==='')
+  {
+    name='Park'
+  }
+  if(sort===null || sort===undefined || sort==='')
+  {
+    sort='acres'
+  }
+
 
   if(species==='')
   {
@@ -37,7 +46,6 @@ const parks = async function (req, res) {
         console.log(err);
         res.json([]);
       } else {
-        console.log(res)
         res.json(data);
       }
     });

@@ -34,6 +34,7 @@ useEffect(() => {
 
 
 const search = () => {
+  console.log('species in search is: ' + species)
   fetch(`http://${config.server_host}:${config.server_port}/parks?sort=${sort}` +
     `&state_low=${stateLow}&state_high=${stateHigh}` +
     `&name=${name}&species=${species}`
@@ -79,6 +80,7 @@ function handleSearchChange(event) {
 
 function handleSearchContent(event) {
   setSearchInput(event.target.value);
+  
   if(searchBy === 'Name')
   {
     setName(event.target.value);
