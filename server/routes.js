@@ -15,7 +15,61 @@ connection.connect((err) => err && console.log(err));
 
 // Route: GET /parks
 const parks = async function (req, res) {
-  res.send("Hello Parks")
+  let sort = req.query.sort;
+  const state_low = req.query.state_low ?? 'AK';
+  const state_high = req.query.state_high ?? 'WZ';
+  let name = req.query.name ?? 'Park';
+  const species = req.query.species ?? '';
+  
+  if(name==='')
+  {
+    name='Park'
+  }
+  if(sort===null || sort===undefined || sort==='')
+  {
+    sort='acres'
+  }
+
+
+  if(species==='')
+  {
+    connection.query(`
+    SELECT ANY_VALUE(p.park_code) AS park_code, p.park_name, ANY_VALUE(p.state) AS state, 
+    ANY_VALUE(p.acres) AS acres, ANY_VALUE(p.longitude) AS longitude, 
+    ANY_VALUE(p.latitude) AS latitude, COUNT(s.species_id) AS species_count
+    FROM Park p JOIN Species s ON p.park_name = s.park_name
+    WHERE p.state>='${state_low}' AND p.state<='${state_high}' AND LOCATE('${name}', p.park_name) > 0
+    GROUP BY p.park_name
+    ORDER BY ${sort} DESC;
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json([]);
+      } else {
+        res.json(data);
+      }
+    });
+  }
+  else
+  {
+    connection.query(`
+    SELECT ANY_VALUE(p.park_code) AS park_code, p.park_name, ANY_VALUE(p.state) AS state, 
+    ANY_VALUE(p.acres) AS acres, ANY_VALUE(p.longitude) AS longitude, 
+    ANY_VALUE(p.latitude) AS latitude, COUNT(s.species_id) AS species_count
+    FROM Park p JOIN Species s ON p.park_name = s.park_name
+    WHERE p.state>='${state_low}' AND p.state<='${state_high}' AND LOCATE('${name}', p.park_name) > 0 AND LOCATE('${species}',s.common_names)>0
+    GROUP BY p.park_name
+    ORDER BY ${sort} DESC;
+    `, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json([]);
+      } else {
+        res.json(data);
+      }
+    });
+  }
+  
 }
 
 // Route: GET /random
