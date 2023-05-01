@@ -44,18 +44,18 @@ WHERE id = ${id};`
  * Get the 50 closest Airbnb listings to the park specified by the given park code sorted by
  * distance, price, and number of reviews.
  *
- * @param parkCode The park code of the park to search for.
+ * @param parkName The park to search for.
  * @return {string} The SQL query string for this search.
  */
-const airbnbsNearPark = (parkCode) =>
+const airbnbsNearPark = (parkName) =>
   `SELECT *,
        3958.8 * (2 * ASIN(SQRT(POWER(SIN((RADIANS((SELECT latitude
                                                    FROM Park
-                                                   WHERE park_code = '${parkCode}')) - RADIANS(Airbnb.latitude)) / 2), 2) +
+                                                   WHERE park_name LIKE '%${parkName}%')) - RADIANS(Airbnb.latitude)) / 2), 2) +
                                COS(RADIANS(Airbnb.latitude)) * COS(RADIANS((SELECT latitude
                                                                             FROM Park
-                                                                            WHERE park_code = '${parkCode}'))) *
-                               POWER(SIN((RADIANS((SELECT longitude FROM Park WHERE park_code = '${parkCode}')) -
+                                                                            WHERE park_name LIKE '%${parkName}%'))) *
+                               POWER(SIN((RADIANS((SELECT longitude FROM Park WHERE park_name LIKE '%${parkName}%')) -
                                           RADIANS(Airbnb.longitude)) / 2),
                                      2)))) AS distance
 FROM Airbnb

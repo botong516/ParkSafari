@@ -100,8 +100,8 @@ const airbnb = async function (req, res) {
 
 // Route: GET /airbnbs
 const airbnbs = async function (req, res) {
-  let parkCode = req.query.park_code;
-  connection.query(queries.airbnbsNearPark(parkCode), (err, data) => {
+  let parkName = req.query.park;
+  connection.query(queries.airbnbsNearPark(parkName), (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
       res.json([]);
