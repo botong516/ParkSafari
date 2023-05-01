@@ -10,8 +10,9 @@ app.use(cors({
 
 app.get('/', routes.index)
 app.get('/parks', routes.parks);
-app.get('/search', routes.search);
 app.get('/species', routes.species);
+app.get('/search', routes.search);
+app.get('/trails', routes.trails);
 app.get('/airbnb', routes.airbnb);
 app.get('/airbnbs', routes.airbnbs);
 app.get('/random', routes.random);

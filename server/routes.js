@@ -59,6 +59,18 @@ const search = async function (req, res) {
   });
 }
 
+// Route: GET /trails
+const trails = async function (req, res) {
+  let parkName = req.query.park;
+  connection.query(queries.trailsForPark(parkName), (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json([]);
+    } else {
+      res.json(data);
+    }
+  });
+}
 
 // Route: GET /species
 const species = async function (req, res) {
@@ -196,6 +208,7 @@ module.exports = {
   parks,
   search,
   species,
+  trails,
   airbnb,
   airbnbs,
   random,
