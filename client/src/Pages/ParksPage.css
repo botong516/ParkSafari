@@ -1,4 +1,4 @@
-.floating-park-card-overlay {
+/* .floating-park-card-overlay {
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
     top: 0;
@@ -20,7 +20,45 @@
     max-width: 600px;
     position: relative;
     z-index: 1001;
+  } */
+
+  .floating-park-card-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
   }
+  
+  .floating-park-card {
+    background-color: #77c4ce;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+    z-index: 1001;
+    max-height: 80%; /* Set the height of the card */
+    overflow-y: auto; /* Enable scrolling */
+  }
+  
+  /* Add some extra styling to the scroll bar */
+  .floating-park-card::-webkit-scrollbar {
+    width: 6px;
+    background-color: #f5f5f5;
+  }
+  
+  .floating-park-card::-webkit-scrollbar-thumb {
+    background-color: #bdbdbd;
+    border-radius: 4px;
+  }
+  
   
   .close-button {
     position: absolute;
@@ -45,3 +83,33 @@
     margin-top: 8px;
     margin-bottom: 16px;
   }  
+
+.tag {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #f1f1f1;
+  border-radius: 4px;
+  margin: 2px;
+  font-size: 14px;
+}
+
+.parkCardSections-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.parkCardSection {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.parkCardSection:last-child {
+  margin-left: 1rem;
+}
+
+.vertical-separator {
+  height: 100%;
+  width: 1px;
+  background-color: #ffffff;
+  margin: 0 20px;
+}

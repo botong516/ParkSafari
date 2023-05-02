@@ -7,7 +7,47 @@ import "./ParksPage.css";
 
 const config = require('../config.json');
 
+// const FloatingParkCard = ({ park, onClose }) => {
+//   return (
+//     <div className="floating-park-card-overlay">
+//       <div className="floating-park-card">
+//         {/* Close button */}
+//         <button className="close-button" onClick={onClose}>
+//           &times;
+//         </button>
+
+//         {/* Park details */}
+//         <h2><span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>{park.park_name}</span></h2>
+//         <hr className="separator" />
+//         <p>Park Code: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.park_code}</span></p>
+//         <p>State: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.state}</span></p>
+//         <p>Acres: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.acres}</span></p>
+//         <p>Latitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.latitude}</span></p>
+//         <p>Longitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.longitude}</span></p>
+//       </div>
+//     </div>
+//   );
+// };
+
 const FloatingParkCard = ({ park, onClose }) => {
+  const [trails, setTrails] = useState([]);
+  const [airbnbs, setAirbnbs] = useState([]);
+
+  useEffect(() => {
+    if (park) {
+      fetch(`http://${config.server_host}:${config.server_port}/trails?park=${park.park_code}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Trails Data:", data);
+          setTrails(data);
+        });
+
+      fetch(`http://${config.server_host}:${config.server_port}/airbnbs?park_code=${park.park_code}`)
+        .then((res) => res.json())
+        .then(setAirbnbs);
+    }
+  }, [park]);
+
   return (
     <div className="floating-park-card-overlay">
       <div className="floating-park-card">
@@ -17,17 +57,73 @@ const FloatingParkCard = ({ park, onClose }) => {
         </button>
 
         {/* Park details */}
-        <h2><span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>{park.park_name}</span></h2>
+        <h2>
+          <span
+            style={{
+              fontFamily: 'Apple Chancery',
+              fontSize: '24px',
+              fontWeight: 'bold',
+            }}
+          >
+            {park.park_name}
+          </span>
+        </h2>
         <hr className="separator" />
-        <p>Park Code: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.park_code}</span></p>
-        <p>State: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.state}</span></p>
-        <p>Acres: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.acres}</span></p>
-        <p>Latitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.latitude}</span></p>
-        <p>Longitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.longitude}</span></p>
+        <p>
+          Park Code:{' '}
+          <span style={{ fontSize: '20px', fontWeight: 'bold' }}>
+            {park.park_code}
+          </span>
+        </p>
+        <p>
+          State:{' '}
+          <span style={{ fontSize: '20px', fontWeight: 'bold' }}>
+            {park.state}
+          </span>
+        </p>
+        <p>
+          Acres:{' '}
+          <span style={{ fontSize: '20px', fontWeight: 'bold' }}>
+            {park.acres}
+          </span>
+        </p>
+        <p>
+          Latitude:{' '}
+          <span style={{ fontSize: '20px', fontWeight: 'bold' }}>
+            {park.latitude}
+          </span>
+        </p>
+        <p>
+          Longitude:{' '}
+          <span style={{ fontSize: '20px', fontWeight: 'bold' }}>
+            {park.longitude}
+          </span>
+        </p>
+        <div className="parkCardSections-container">
+          <div className="parkCardSections">
+            <h3>Trails</h3>
+            {trails.map((trail) => (
+              <span key={trail.trail_id} className="tag">
+                {trail.trail_name}
+              </span>
+            ))}
+          </div>
+          <div className="vertical-separator"></div>
+          <div className="parkCardSections">
+            <h3>Airbnbs</h3>
+            {airbnbs.map((airbnb) => (
+              <span key={airbnb.id} className="tag">
+                {airbnb.name}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
+
+
 
 
 const SearchPage = () => {
@@ -98,28 +194,28 @@ function handleSearchContent(event) {
   setSearchInput(event.target.value);
 }
 
-const FloatingParkCard = ({ park, onClose }) => {
-  return (
-    <div className="floating-park-card-overlay">
-      <div className="floating-park-card">
-        {/* Close button */}
-        <button className="close-button" onClick={onClose}>
-          &times;
-        </button>
+// const FloatingParkCard = ({ park, onClose }) => {
+//   return (
+//     <div className="floating-park-card-overlay">
+//       <div className="floating-park-card">
+//         {/* Close button */}
+//         <button className="close-button" onClick={onClose}>
+//           &times;
+//         </button>
 
-        {/* Park details */}
-        <h2><span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>{park.park_name}</span></h2>
-        <hr className="separator" />
-        <p>Park Code: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.park_code}</span></p>
-        <p>State: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.state}</span></p>
-        <p>Acres: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.acres}</span></p>
-        <p>Latitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.latitude}</span></p>
-        <p>Longitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.longitude}</span></p>
-        <p>Number of Species: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.species_count}</span></p>
-      </div>
-    </div>
-  );
-};
+//         {/* Park details */}
+//         <h2><span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>{park.park_name}</span></h2>
+//         <hr className="separator" />
+//         <p>Park Code: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.park_code}</span></p>
+//         <p>State: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.state}</span></p>
+//         <p>Acres: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.acres}</span></p>
+//         <p>Latitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.latitude}</span></p>
+//         <p>Longitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.longitude}</span></p>
+//         <p>Number of Species: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.species_count}</span></p>
+//       </div>
+//     </div>
+//   );
+// };
 
 return (
 
