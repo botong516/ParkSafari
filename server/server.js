@@ -11,7 +11,6 @@ app.use(cors({
 app.get('/', routes.index)
 app.get('/parks', routes.parks);
 app.get('/species', routes.species);
-app.get('/park/:park_code', routes.parkcode);
 app.get('/search', routes.search);
 app.get('/trails', routes.trails);
 app.get('/airbnb', routes.airbnb);

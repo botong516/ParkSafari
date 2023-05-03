@@ -72,19 +72,6 @@ const trails = async function (req, res) {
   });
 }
 
-// Route: GET /park/:park_code
-const parkcode = async function (req, res) {
-  let parkCode = req.query.park_code;
-  connection.query(queries.trailsForPark(parkCode), (err, data) => {
-    if (err || data.length === 0) {
-      console.log(err);
-      res.json([]);
-    } else {
-      res.json(data);
-    }
-  });
-}
-
 // Route: GET /species
 const species = async function (req, res) {
   let parkName = req.query.park;
@@ -221,7 +208,6 @@ module.exports = {
   parks,
   search,
   species,
-  parkcode,
   trails,
   airbnb,
   airbnbs,
