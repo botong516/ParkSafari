@@ -44,5 +44,9 @@
   "main": "index.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "jest": "^27.5.1"
+  }
 }
