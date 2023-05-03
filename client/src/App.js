@@ -3,7 +3,7 @@
  * This file contains the code for the App component.
  * This component is the root component of the React app.
  * It contains the code for the navigation bar and the routing.
- * 
+ *
  */
 
 // Import libraries and files
@@ -30,9 +30,9 @@ function App() {
               <Nav.Link as={Link} to="/discovery/section1">
                 Discovery
               </Nav.Link>
-              <Nav.Link as={Link} to="/park">
-                Park
-              </Nav.Link>
+              {/*<Nav.Link as={Link} to="/park">*/}
+              {/*  Park*/}
+              {/*</Nav.Link>*/}
             </Nav>
           </Navbar.Collapse>
         </Container>
