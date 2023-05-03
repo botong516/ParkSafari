@@ -93,7 +93,7 @@ ORDER BY ${sortBy} ${sortBy === 'park_name' ? 'ASC' : 'DESC'};`
  * @return {string} The SQL query string for this search.
  */
 const trailsForPark = (parkCode) =>
-  `SELECT Trail.name AS trail_name, Trail.park_name, Trail.length, Trail.avg_rating
+  `SELECT Trail.park_code as park_code, Trail.name AS trail_name, Trail.park_name, Trail.length, Trail.avg_rating
 FROM Trail
          INNER JOIN Park ON Trail.park_code = Park.park_code
 WHERE Park.park_code = '${parkCode}'
