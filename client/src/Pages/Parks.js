@@ -1,10 +1,18 @@
+/**
+ * @file Parks.js is the main page for the Parks section of the website.
+ * It allows the user to view all the parks in the database and click on each park to view more details.
+ */
+
+// Import libraries and files
 import React, { useState, useEffect } from "react";
 import { Box, Container, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import { styled } from '@mui/system';
 import "./ParksPage.css";
 
+// Import config file
 const config = require('../config.json');
 
+// Define ParksPage React component
 const ParksPage = () => {
   const [results, setResults] = useState([]);
   const [selectedPark, setSelectedPark] = useState(null);
@@ -13,16 +21,19 @@ const ParksPage = () => {
     fetchData();
   }, []);
 
+  // Fetch data from the backend
   const fetchData = async () => {
     const response = await fetch(`http://${config.server_host}:${config.server_port}/parks`);
     const data = await response.json();
     setResults(data);
   };
 
+  // Handle park click
   const handleParkClick = (park) => {
     setSelectedPark(park);
   };
 
+  // display the parks in a card format
   const FloatingParkCard = ({ park, onClose }) => {
     return (
       <div className="floating-park-card-overlay">
@@ -46,7 +57,7 @@ const ParksPage = () => {
     );
   };
 
-
+  // Style the components
   const flexFormat = {
     display: 'flex',
     flexDirection: 'row',
@@ -76,6 +87,7 @@ const ParksPage = () => {
     fontSize: '1.2rem',
   }));
 
+  // Return the ParksPage component
   return (
     <div className="parks">
     <div className="section-container">

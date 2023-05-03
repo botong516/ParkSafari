@@ -1,41 +1,40 @@
+/**
+ * @fileoverview This file renders the second section of the discovery page.
+ * This section allows users to find the top most popular species in each park
+ *  that has a trail with popularity at least 6.
+ * Users can enter a number and click the button to find the top most popular species in each park.
+ * The results will be displayed in a form of cards.
+ * This section corresponds to the second tab of the discovery page and fetches data from the our second complex query.
+*/
+
+// Import required libraries and components
 import React, { useState, useEffect, useRef } from "react";
 import "./discovery_sec.css";
 import { Box, Container, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
-
+// Import config file
 const config = require('../config.json');
+
+// Define Tab 2 React component
 const Section2 = () => {
   const [inputValue, setInputValue] = useState("");
   const [results, setResults] = useState([]);
   const inputRef = useRef();
 
+  // Focus on the input box when the page is loaded
   useEffect(() => {
     inputRef.current.focus();
   }, []);
-    // useEffect(() => {
-    //     fetch(`http://${config.server_host}:${config.server_port}/random`)
-    //     .then(res => res.json())
-    //     .then(resJson => {
-    //         setResults(resJson);
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //     });
-    // }, []);
 
+  // Handle input change
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
-  // const fetchData = async () => {
-  //   const response = await fetch(`http://${config.server_host}:${config.server_port}/popular-species?num=${inputValue}`);
-  //   const data = await response.json();
-  //   setResults(data);
-  // };
-
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Fetch data from the backend
   const fetchData = async () => {
     if (inputValue === "") {
       setErrorMessage("Please enter a number.");
@@ -55,6 +54,7 @@ const Section2 = () => {
     }
   };
 
+  // Define styles
   const flexFormat = { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly' };
 
   const StyledBox = styled(Box)(({ theme }) => ({
@@ -79,6 +79,7 @@ const Section2 = () => {
     fontSize: '1.2rem',
   }));
 
+  // Render the component
   return (
     <div className="section-container">
       <h2>Discover Species in Popular Trails</h2>
@@ -103,16 +104,6 @@ const Section2 = () => {
         <div>
             <Container style={flexFormat}>
       {results.map((result, index) =>
-        // <Box
-        //   key={result.species_id}
-        //   p={3}
-        //   m={2}
-        //   style={{ background: 'white', borderRadius: '16px', border: '2px solid #000' }}
-        // >
-        //     <h4>Scientific name: {result.scientific_name}</h4>
-        //     <h5>Park name: {result.park_name}</h5>
-        //     <h5>Rank: {result.ranks}</h5>
-        // </Box>
         <StyledBox key={result.species_id}>
       <TableContainer>
         <Table>

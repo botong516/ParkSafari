@@ -1,9 +1,21 @@
+/**
+ * @fileoverview discovery_sec3.js contains the code for the third discovery section.
+ * It allows the user to input a state, neighbourhood, distance, and number of results
+ * and returns the top airbnbs in that neighbourhood that are closest to the park
+ * with the highest species count.
+ *  This section corresponds to the third tab of the discovery page and fetches data from the our third complex query.
+ */
+
+// Import libraries and files
 import React, { useState, useEffect, useRef } from "react";
 import "./discovery_sec.css";
 import { Box, Container, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
+// Import config file
 const config = require('../config.json');
+
+// Define Tab 3 React component
 const Section3 = () => {
   const [state, setState] = useState("");
   const [neighbourhood, setNeighbourhood] = useState("");
@@ -12,34 +24,34 @@ const Section3 = () => {
   const [results, setResults] = useState([]);
   const stateRef = useRef();
 
+  // Focus on the input box when the page is loaded
   useEffect(() => {
     stateRef.current.focus();
   }, []);
 
+  // Handle input change
   const handleStateChange = (e) => {
     setState(e.target.value);
   };
 
+  // Handle input change
   const handleNeighbourhoodChange = (e) => {
     setNeighbourhood(e.target.value);
   };
 
+  // Handle input change
   const handleDistanceChange = (e) => {
     setDistance(e.target.value);
   };
 
+  // Handle input change
   const handleNumChange = (e) => {
     setNum(e.target.value);
   };
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  // const fetchData = async () => {
-  //   const response = await fetch(`http://${config.server_host}:${config.server_port}/most-biodiverse-airbnbs?state=${state}&neighbourhood=${neighbourhood}&distance=${distance}&num=${num}`);
-  //   const data = await response.json();
-  //   setResults(data);
-  // };
-
+  // Fetch data from the backend
   const fetchData = async () => {
     if (state === "" || neighbourhood === "" || distance === "" || num === "") {
       setErrorMessage("Please fill in all fields.");
@@ -54,12 +66,14 @@ const Section3 = () => {
   };
   
 
+  // Handle key press
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       fetchData();
     }
   };
 
+  // Define styles
   const flexFormat = { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly' };
 
   const StyledBox = styled(Box)(({ theme }) => ({
@@ -84,6 +98,7 @@ const Section3 = () => {
     fontSize: '1.2rem',
   }));
 
+  // Return the frontend rendering code
   return (
     <div className="section-container">
       <h2>Discover Top Airbnbs With High Species Count</h2>
