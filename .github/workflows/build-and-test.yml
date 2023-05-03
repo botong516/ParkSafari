@@ -15,12 +15,14 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
-
+        
       - name: Create config.json 📝
-        run: |
-          config="${{ secrets.CONFIG }}"
-          cd server
-          echo "$config" > config.json
+        id: create-json
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: "config.json"
+          json: ${{ secrets.CONFIG }}
+          dir: "server/"
 
       - uses: actions/setup-node@v3
         with:
