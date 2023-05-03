@@ -16,10 +16,10 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
-      - name: Copy config file 📝
+      - name: Create config.json 📝
         working-directory: ./server
         run: |
-          config=${{ secrets.CONFIG }}
+          config="${{ secrets.CONFIG }}"
           echo "$config" > config.json
 
       - uses: actions/setup-node@v3
