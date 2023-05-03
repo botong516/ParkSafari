@@ -1,3 +1,4 @@
+/* Container for each section with a white, semi-transparent background */
 .section-container {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 20px;
@@ -8,6 +9,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
+  /* Styling for the instruction text */
   .instruction-text {
     font-size: 24px;
     line-height: 1.5;
@@ -19,6 +21,7 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   }
   
+  /* Container for input elements */
   .input-container {
     font-size: 20px;
     font-family: "Chalkduster";
@@ -26,32 +29,38 @@
     margin-bottom: 20px;
   }
   
+  /* Styling for the number input field */
   .number-input {
     width: 50px;
     margin-left: 5px;
     margin-right: 5px;
     text-align: center;
   }
-  
+
+  /* Container for holding result items in a flexbox */
   .results-container {
     display: flex;
     flex-wrap: wrap;
   }
   
+  /* Styling for each result item */
   .result-item {
     flex: 0 0 50%;
     font-size: 16px;
     margin-bottom: 10px;
   }
 
+  /* Container for holding the button with centered alignment */
   .button-container {
     text-align: center;
   }
   
+  /* Cursor styling for buttons */
   button {
     cursor: pointer;
   }
 
+  /* Styling for error messages */
   .error-message {
     color: red;
     font-size: 0.9rem;

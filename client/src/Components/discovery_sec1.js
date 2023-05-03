@@ -1,41 +1,38 @@
+/**
+ * @fileoverview This file renders the first section of the discovery page.
+ * This section allows the user to find the top most frequently appeared species in 
+ * the nearby parks of the 100 top-rated Airbnbs that have trails with popularity less than or equal to 200.
+ * The results will be displayed in a form of cards.
+ * This section corresponds to the first tab of the discovery page and fetches data from the our first complex query.
+*/
+// Import required libraries and components
 import React, { useState, useEffect, useRef } from "react";
 import "./discovery_sec.css";
 import { Box, Container, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
-
+// Import config file
 const config = require('../config.json');
+
+// Define Tab 1 React component
 const Section1 = () => {
   const [inputValue, setInputValue] = useState("");
   const [results, setResults] = useState([]);
   const inputRef = useRef();
 
+  // Focus on the input box when the page is loaded
   useEffect(() => {
     inputRef.current.focus();
   }, []);
-    // useEffect(() => {
-    //     fetch(`http://${config.server_host}:${config.server_port}/random`)
-    //     .then(res => res.json())
-    //     .then(resJson => {
-    //         setResults(resJson);
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //     });
-    // }, []);
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Handle input change
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
-  // const fetchData = async () => {
-  //   const response = await fetch(`http://${config.server_host}:${config.server_port}/species-for-photographers?num=${inputValue}`);
-  //   const data = await response.json();
-  //   setResults(data);
-  // };
-
+  // Fetch data from the backend
   const fetchData = async () => {
     if (inputValue === "") {
       setErrorMessage("Please enter a number.");
@@ -50,12 +47,14 @@ const Section1 = () => {
   };
   
 
+  // Handle key press
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       fetchData();
     }
   };
 
+  // Define styles
   const flexFormat = { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly' };
 
   const StyledBox = styled(Box)(({ theme }) => ({
@@ -80,6 +79,7 @@ const Section1 = () => {
     fontSize: '1.2rem',
   }));
 
+  // Return the JSX code
   return (
     <div className="section-container">
       <h2>Discover Species in Nearby Parks</h2>
@@ -104,15 +104,6 @@ const Section1 = () => {
         <div>
             <Container style={flexFormat}>
       {results.map((result, index) =>
-        // <Box
-        //   key={result.species_id}
-        //   p={3}
-        //   m={2}
-        //   style={{ background: 'white', borderRadius: '16px', border: '2px solid #000' }}
-        // >
-        //     <h4>Species: {result.common_names}</h4>
-        //     <h5>Occurrence count: {result.occurrence_count}</h5>
-        // </Box>
         <StyledBox key={result.species_id}>
         <TableContainer>
           <Table>
@@ -140,7 +131,3 @@ const Section1 = () => {
 };
 
 export default Section1;
-
-// {results.map((result, index) => (
-//     <p key={index}>{result}</p>
-//     ))}

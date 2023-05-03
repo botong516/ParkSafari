@@ -1,3 +1,9 @@
+/**
+ * @fileoverview discovery page
+ * This page contains the code for the discovery page.
+ */
+
+// Import libraries and files
 import React, { useState } from 'react';
 import { Tab, Tabs, Container, Row, Col } from 'react-bootstrap';
 import { Routes, Route, useNavigate } from 'react-router-dom';
@@ -7,15 +13,18 @@ import Section2 from "../Components/discovery_sec2";
 import Section3 from "../Components/discovery_sec3";
 import Section4 from "../Components/discovery_sec4";
 
+// Define DiscoveryPage React component
 const DiscoveryPage = () => {
   const navigate = useNavigate();
   const [activeKey, setActiveKey] = useState('section1');
 
+  // Handle tab selection
   const handleSelect = (selectedKey) => {
     setActiveKey(selectedKey);
     navigate(`${selectedKey}`);
   };
-
+  
+  // Return the discovery page rendering
   return (
     <div className="discovery">
       <Container fluid>

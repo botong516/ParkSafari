@@ -1,9 +1,21 @@
+/**
+ * @fileoverview discovery_sec4.js contains the code for the fourth discovery section.
+ * It allows the user to for each park where a specific species can be found, 
+ * get the top 3 best-valued Airbnbs that are the closest to the park in specific state.
+ * This section corresponds to the fourth tab of the discovery page and fetches data from the our fourth complex query.
+ * 
+ */
+
+// Import libraries and files
 import React, { useState, useEffect, useRef } from "react";
 import "./discovery_sec.css";
 import { Box, Container, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
+// Import config file
 const config = require('../config.json');
+
+// Define Tab 4 React component
 const Section4 = () => {
   const [species, setSpecies] = useState("");
   const [num, setNum] = useState("");
@@ -11,26 +23,24 @@ const Section4 = () => {
   const [results, setResults] = useState([]);
   const stateRef = useRef();
 
+  // Focus on the input box when the page is loaded
   useEffect(() => {
     stateRef.current.focus();
   }, []);
 
+  // Handle input change
   const handleSpeciesChange = (e) => {
     setSpecies(e.target.value);
   };
 
+  // Handle input change
   const handleNumChange = (e) => {
     setNum(e.target.value);
   };
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  // const fetchData = async () => {
-  //   const response = await fetch(`http://${config.server_host}:${config.server_port}/recommended-airbnbs?species=${species}&num=${num}&state=${state}`);
-  //   const data = await response.json();
-  //   setResults(data);
-  // };
-
+  // Fetch data from the backend
   const fetchData = async () => {
     if (species === "" || num === "" || state === "") {
       setErrorMessage("Please fill in all fields.");
@@ -44,13 +54,14 @@ const Section4 = () => {
     setResults(data);
   };
   
-
+  // Handle key press
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       fetchData();
     }
   };
 
+  // Style the components
   const flexFormat = { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly' };
 
   const StyledBox = styled(Box)(({ theme }) => ({
@@ -75,6 +86,7 @@ const Section4 = () => {
     fontSize: '1.2rem',
   }));
 
+  // Return the frontend component
   return (
     <div className="section-container">
       <h2>Discover Top Airbnbs Near Species Habitat</h2>
@@ -108,6 +120,9 @@ const Section4 = () => {
           className="text-input"
           style={{ width: `${50 + state.length * 10}px` }}
         />{" "}.{" "}
+        <br />
+        <br />
+        (sample inputs: Species: "bird"; Ranking: 3; State: "CA".)
         <br />
         <br />
         <div className="button-container">

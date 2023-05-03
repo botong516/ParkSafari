@@ -1,27 +1,4 @@
-/* .floating-park-card-overlay {
-    background-color: rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .floating-park-card {
-    background-color: #77c4ce;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    width: 80%;
-    max-width: 600px;
-    position: relative;
-    z-index: 1001;
-  } */
-
+  /* Overlay for the floating park card */
   .floating-park-card-overlay {
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
@@ -35,6 +12,7 @@
     z-index: 1000;
   }
   
+  /* Styling for the floating park card */
   .floating-park-card {
     background-color: #77c4ce;
     padding: 20px;
@@ -59,7 +37,7 @@
     border-radius: 4px;
   }
   
-  
+  /* Style the close button of the floating park card */
   .close-button {
     position: absolute;
     top: 5px;
@@ -70,13 +48,14 @@
     cursor: pointer;
   }
   
-
+  /* Style for the park name link */
   .park-name-link {
     color: blue;
     cursor: pointer;
     text-decoration: underline;
   }
   
+  /* Style for the separator line */
   .separator {
     border: none;
     border-top: 1px solid #111010;
@@ -84,32 +63,37 @@
     margin-bottom: 16px;
   }  
 
-.tag {
-  display: inline-block;
-  padding: 4px 8px;
-  background-color: #f1f1f1;
-  border-radius: 4px;
-  margin: 2px;
-  font-size: 14px;
-}
+  /* Style for the tag */
+  .tag {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+    margin: 2px;
+    font-size: 14px;
+  }
 
-.parkCardSections-container {
-  display: flex;
-  justify-content: space-between;
-}
+  /* Style for the park card sections container */
+  .parkCardSections-container {
+    display: flex;
+    justify-content: space-between;
+  }
 
-.parkCardSection {
-  flex: 1;
-  margin-bottom: 1rem;
-}
+  /* Style for the individual park card section */
+  .parkCardSection {
+    flex: 1;
+    margin-bottom: 1rem;
+  }
 
-.parkCardSection:last-child {
-  margin-left: 1rem;
-}
+  /* Style for the last park card section */
+  .parkCardSection:last-child {
+    margin-left: 1rem;
+  }
 
-.vertical-separator {
-  height: 100%;
-  width: 1px;
-  background-color: #ffffff;
-  margin: 0 20px;
-}
+  /* Style for the vertical separator */
+  .vertical-separator {
+    height: 100%;
+    width: 1px;
+    background-color: #ffffff;
+    margin: 0 20px;
+  }
