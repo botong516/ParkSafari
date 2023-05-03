@@ -1,0 +1,300 @@
+CREATE DATABASE PARK_SAFARI;
+USE PARK_SAFARI;
+
+# Create Park table for park.csv
+CREATE TABLE Park
+(
+    park_code VARCHAR(10)  NOT NULL,
+    park_name VARCHAR(100) NOT NULL,
+    state     VARCHAR(50)  NOT NULL,
+    acres     INT          NOT NULL,
+    latitude  FLOAT        NOT NULL,
+    longitude FLOAT        NOT NULL,
+    PRIMARY KEY (park_code)
+);
+
+# Create Species table for species.csv
+CREATE TABLE Species
+(
+    species_id          VARCHAR(10)  NOT NULL,
+    park_name           VARCHAR(100) NOT NULL,
+    category            VARCHAR(50)  NOT NULL,
+    order_name          VARCHAR(50),
+    family              VARCHAR(50),
+    scientific_name     VARCHAR(100) NOT NULL,
+    common_names        VARCHAR(200) NOT NULL,
+    record_status       VARCHAR(50)  NOT NULL,
+    occurrence          VARCHAR(50),
+    nativeness          VARCHAR(50),
+    abundance           VARCHAR(50),
+    seasonality         VARCHAR(50),
+    conservation_status VARCHAR(50),
+    PRIMARY KEY (species_id)
+);
+
+# Create Trail table for trails.csv
+CREATE TABLE Trail
+(
+    trail_id          INT          NOT NULL,
+    park_code         VARCHAR(10)  NOT NULL,
+    name              VARCHAR(100) NOT NULL,
+    park_name         VARCHAR(50)  NOT NULL,
+    city_name         VARCHAR(50)  NOT NULL,
+    state_name        VARCHAR(50)  NOT NULL,
+    country_name      VARCHAR(50)  NOT NULL,
+    popularity        FLOAT        NOT NULL,
+    length            FLOAT        NOT NULL,
+    elevation_gain    FLOAT        NOT NULL,
+    difficulty_rating INT          NOT NULL,
+    route_type        VARCHAR(50)  NOT NULL,
+    avg_rating        FLOAT        NOT NULL,
+    num_reviews       INT          NOT NULL,
+    features          TEXT         NOT NULL,
+    activities        TEXT         NOT NULL,
+    latitude          FLOAT        NOT NULL,
+    longitude         FLOAT        NOT NULL,
+    PRIMARY KEY (trail_id),
+    FOREIGN KEY (park_code) REFERENCES Park (park_code)
+);
+
+# Create Airbnb table for airbnb.csv
+CREATE TABLE Airbnb
+(
+    id                             INT          NOT NULL,
+    name                           VARCHAR(100) NOT NULL,
+    host_id                        INT          NOT NULL,
+    host_name                      VARCHAR(50)  NOT NULL,
+    neighbourhood_group            VARCHAR(50),
+    neighbourhood                  VARCHAR(50),
+    latitude                       FLOAT        NOT NULL,
+    longitude                      FLOAT        NOT NULL,
+    room_type                      VARCHAR(50)  NOT NULL,
+    price                          INT          NOT NULL,
+    minimum_nights                 INT          NOT NULL,
+    number_of_reviews              INT          NOT NULL,
+    last_review                    DATE,
+    reviews_per_month              FLOAT,
+    calculated_host_listings_count INT,
+    availability_365               INT,
+    number_of_reviews_ltm          INT,
+    license                        VARCHAR(50),
+    state                          VARCHAR(50),
+    city                           VARCHAR(50),
+    PRIMARY KEY (id)
+);
+
+# Create a table for the many-to-many relationship between Park and Species
+CREATE TABLE Has
+(
+    park_id    VARCHAR(10),
+    species_id VARCHAR(10),
+    PRIMARY KEY (park_id, species_id),
+    FOREIGN KEY (park_id) REFERENCES Park (park_code),
+    FOREIGN KEY (species_id) REFERENCES Species (species_id)
+);
+
+# Populate the Has table
+INSERT INTO Has (park_id, species_id)
+SELECT P.park_code, S.species_id
+FROM Park P
+JOIN Species S ON P.park_name = S.park_name;
+
+# Create a table for the many-to-many relationship between Trail and Airbnb
+CREATE TABLE Near_Trail
+(
+    trail_id  INT,
+    airbnb_id INT,
+    PRIMARY KEY (trail_id, airbnb_id),
+    FOREIGN KEY (trail_id) REFERENCES Trail (trail_id),
+    FOREIGN KEY (airbnb_id) REFERENCES Airbnb (id)
+);
+
+# Populate the Near_trail table
+INSERT INTO Near_Trail (trail_id, airbnb_id)
+SELECT Trail.trail_id, Airbnb.id
+FROM Trail, Airbnb;
+
+# Create a table for the many-to-many relationship between Park and Airbnb
+CREATE TABLE Near_Park
+(
+    park_id   VARCHAR(10),
+    airbnb_id INT,
+    PRIMARY KEY (park_id, airbnb_id),
+    FOREIGN KEY (park_id) REFERENCES Park (park_code),
+    FOREIGN KEY (airbnb_id) REFERENCES Airbnb (id)
+);
+
+# Populate the Near_Park table
+INSERT INTO Near_Park (park_id, airbnb_id)
+SELECT Park.park_code, Airbnb.id
+FROM Park, Airbnb;
+
+# Create a table for the many-to-many relationship between Species and Trail
+CREATE TABLE Around
+(
+    species_id VARCHAR(10),
+    trail_id   INT,
+    PRIMARY KEY (species_id, trail_id),
+    FOREIGN KEY (species_id) REFERENCES Species (species_id),
+    FOREIGN KEY (trail_id) REFERENCES Trail (trail_id)
+);
+
+# Populate the Around table
+INSERT INTO Around(species_id, trail_id)
+SELECT S.species_id, T.trail_id
+FROM Trail T JOIN Species S ON T.park_name = S.park_name;
+
+
+# Create a materialized view to store the ranked Airbnbs that has at least 150 reviews closest to any national park
+# The Airbnbs are ranked first by the distance to the park in ascending order, then by park name in alphabetical order, and lastly by ranking in ascending order.
+CREATE VIEW ranked_airbnb_near_park AS
+(
+WITH park_airbnb AS (SELECT A.id,
+                            3958.8 *
+                            (2 * ASIN(SQRT(POWER(SIN((RADIANS(P.latitude) - RADIANS(A.latitude)) / 2), 2) +
+                                           COS(RADIANS(A.latitude)) * COS(RADIANS(P.latitude)) *
+                                           POWER(SIN((RADIANS((P.longitude)) -
+                                                      RADIANS(P.longitude)) / 2),
+                                                 2)))) AS distance_to_park,
+                            P.park_name,
+                            A.price,
+                            A.number_of_reviews
+                     FROM Park P,
+                          (SELECT * FROM Airbnb WHERE number_of_reviews > 150) A
+                     GROUP BY P.park_name, P.longitude, P.latitude, A.id, A.price,
+                              A.number_of_reviews),
+     ranked_park_airbinb AS (SELECT *,
+                                    ROW_NUMBER() OVER (PARTITION BY park_name
+                                        ORDER BY distance_to_park, price, number_of_reviews DESC) AS ranking
+                             FROM park_airbnb)
+SELECT A2.*, A1.distance_to_park, A1.park_name, A1.ranking
+FROM ranked_park_airbinb A1
+         JOIN Airbnb A2 ON A1.id = A2.id
+ORDER BY A1.distance_to_park, A1.park_name, A1.ranking);
+
+CREATE TABLE materialized_view_ranked_airbnb_near_park
+(
+    id                  INT          NOT NULL,
+    ranking             INT          NOT NULL,
+    name                VARCHAR(100) NOT NULL,
+    distance_to_park    FLOAT        NOT NULL,
+    park_name           VARCHAR(100) NOT NULL,
+    price               INT          NOT NULL,
+    number_of_reviews   INT          NOT NULL,
+    neighbourhood_group VARCHAR(50),
+    neighbourhood       VARCHAR(50),
+    city                VARCHAR(50),
+    state               VARCHAR(50),
+    host_name           VARCHAR(50)  NOT NULL,
+    room_type           VARCHAR(50)  NOT NULL,
+    minimum_nights      INT          NOT NULL,
+    availability_365    INT
+);
+
+INSERT INTO materialized_view_ranked_airbnb_near_park
+SELECT id,
+       ranking,
+       name,
+       distance_to_park,
+       park_name,
+       price,
+       number_of_reviews,
+       neighbourhood_group,
+       neighbourhood,
+       city,
+       state,
+       host_name,
+       room_type,
+       minimum_nights,
+       availability_365
+FROM ranked_airbnb_near_park;
+
+# To optimize Complex Query 1, create index on the materialized view and Species Table
+CREATE INDEX idx_state ON materialized_view_ranked_airbnb_near_park (state) USING HASH;
+CREATE INDEX idx_park_name ON materialized_view_ranked_airbnb_near_park (park_name) USING HASH;
+CREATE INDEX idx_ranking ON materialized_view_ranked_airbnb_near_park (ranking) USING BTREE;
+CREATE INDEX idx_distance_park_ranking ON materialized_view_ranked_airbnb_near_park (distance_to_park, park_name, ranking) USING BTREE;
+CREATE INDEX idx_common_names ON Species (common_names) USING HASH;
+
+# To optimize Complex Query 2, create index on the materialized view on the attributes id, neighbourhood, and distance_to_park
+CREATE INDEX idx_id ON materialized_view_ranked_airbnb_near_park (id) USING HASH;
+CREATE INDEX idx_neighbourhood ON materialized_view_ranked_airbnb_near_park (neighbourhood) USING HASH;
+CREATE INDEX idx_distance_to_park ON materialized_view_ranked_airbnb_near_park (distance_to_park) USING BTREE;
+
+# Create a materialized view to store all species in each park that have a trail with popularity >= 6.5731,
+# where the species are ranked in descending order of popularity. Popularity of the species is determined as the number of parks a species occur in.
+CREATE VIEW ranked_species_in_popular_park AS
+(
+WITH COUNT AS (SELECT scientific_name, COUNT(DISTINCT park_name) AS species_count
+               FROM Species S
+               WHERE park_name = ANY (SELECT DISTINCT park_name From Trail WHERE popularity >= 6.5731)
+               GROUP BY scientific_name),
+     species_with_count AS (SELECT S.park_name, C.scientific_name, C.species_count
+                            FROM Species S
+                                     JOIN COUNT C ON S.scientific_name = C.scientific_name)
+SELECT park_name,
+       scientific_name,
+       ROW_NUMBER() over (PARTITION BY park_name ORDER BY C.species_count DESC) AS ranking,
+       species_count
+FROM species_with_count C
+    );
+
+CREATE TABLE materialized_view_ranked_species_in_popular_park
+(
+    park_name       VARCHAR(100) NOT NULL,
+    scientific_name VARCHAR(100) NOT NULL,
+    ranking         INT          NOT NULL,
+    species_count   INT          NOT NULL
+);
+
+INSERT INTO materialized_view_ranked_species_in_popular_park
+SELECT *
+FROM ranked_species_in_popular_park;
+
+# To optimize query 3, add index on the materialized view on attributes ranking and park_name
+CREATE INDEX idx_ranking ON materialized_view_ranked_species_in_popular_park (ranking) USING BTREE;
+CREATE INDEX idx_park_ranking ON materialized_view_ranked_species_in_popular_park (park_name, ranking) USING BTREE;
+
+# Create a materialized view to store all the counts of frequently appeared species in the nearby parks of the 100 top-rated Airbnbs that
+# have trails with popularity less than or equal to 6. Nearby parks are defined as parks within 100 miles of an Airbnb's location.
+CREATE VIEW ranked_species_in_unpopular_park_near_top_airbnb AS
+(
+WITH top_airbnbs AS (SELECT *
+                     FROM Airbnb
+                     ORDER BY number_of_reviews DESC
+                     LIMIT 100),
+     nearby_parks AS (SELECT DISTINCT a.id, p.park_code
+                      FROM top_airbnbs a
+                               JOIN Park p ON (
+                                                      3958.8 * (2 *
+                                                                ASIN(SQRT(POWER(SIN((RADIANS(a.latitude) - RADIANS(p.latitude)) / 2), 2) +
+                                                                          COS(RADIANS(a.latitude)) *
+                                                                          COS(RADIANS(p.latitude)) *
+                                                                          POWER(
+                                                                                  SIN((RADIANS((a.longitude)) - RADIANS(p.longitude)) / 2),
+                                                                                  2))))
+                                                  ) <= 100),
+     species_counts AS (SELECT s.species_id, COUNT(*) AS occurrence_count
+                        FROM nearby_parks np
+                                 JOIN Trail t ON np.park_code = t.park_code
+                                 JOIN Species s ON t.park_name = s.park_name
+                        WHERE t.popularity <= 6
+                        GROUP BY s.species_id)
+SELECT s.species_id, s.common_names, sc.occurrence_count
+FROM Species s
+         JOIN species_counts sc ON s.species_id = sc.species_id
+ORDER BY sc.occurrence_count DESC);
+
+CREATE TABLE materialized_view_ranked_species_near_top_airbnb
+(
+    species_id       VARCHAR(10)  NOT NULL,
+    common_names     VARCHAR(200) NOT NULL,
+    occurrence_count INT          NOT NULL
+);
+
+# To optimize Complex Query 4, add index on the materialized view on attributes occurrence_count and species_id
+CREATE INDEX idx_occurrence_id ON materialized_view_ranked_species_near_top_airbnb (occurrence_count, species_id) USING BTREE;
+
+INSERT INTO materialized_view_ranked_species_near_top_airbnb
+SELECT *
+FROM ranked_species_in_unpopular_park_near_top_airbnb;
