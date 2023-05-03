@@ -110,6 +110,9 @@ const Section4 = () => {
         />{" "}.{" "}
         <br />
         <br />
+        (sample inputs: Species: "bird"; Ranking: 3; State: "CA".)
+        <br />
+        <br />
         <div className="button-container">
         <button onClick={fetchData}>Search</button>
         </div>

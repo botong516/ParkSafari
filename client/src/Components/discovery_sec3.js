@@ -129,6 +129,8 @@ const Section3 = () => {
         Airbnbs.
         <br />
         <br />
+        (sample inputs: State: "CA"; Neighbourhood: "Hollywood"; Distance: 20; Top Airbnbs: 10.)
+        <br />
         <div className="button-container">
         <button onClick={fetchData}>Search</button>
         </div>
