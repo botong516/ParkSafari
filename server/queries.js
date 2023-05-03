@@ -23,8 +23,11 @@ ORDER BY ${sortBy} ${sortBy === 'park_name' ? 'ASC' : 'DESC'};`
 const allSpeciesAtPark = (parkName) =>
   `SELECT p.park_name, s.scientific_name, s.category
 FROM Park p
-         JOIN Species s ON p.park_name = s.park_name
-WHERE p.park_name LIKE '${parkName}'
+JOIN Species s ON p.park_name = s.park_name
+WHERE EXISTS (SELECT *
+              FROM Park p1
+              WHERE p1.park_name = p.park_name
+              AND p1.park_name LIKE '${parkName}')
 ORDER BY s.category;`
 
 /**
@@ -273,7 +276,7 @@ const mostBiodiverseAirbnbs = (state, neighbourhood, distance, num) =>
                      FROM (SELECT * FROM Park WHERE state LIKE '%${state}%') P
                               JOIN (SELECT * FROM Airbnb WHERE neighbourhood = '${neighbourhood}') A
                                    ON EXISTS(
-                                           SELECT 1
+                                           SELECT *
                                            WHERE ((2 *
                                                    ASIN(SQRT(POWER(SIN((RADIANS(P.latitude) - RADIANS(A.latitude)) / 2), 2) +
                                                              COS(RADIANS(A.latitude)) * COS(RADIANS(A.latitude)) *
