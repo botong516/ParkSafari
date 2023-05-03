@@ -7,41 +7,23 @@ import "./ParksPage.css";
 
 const config = require('../config.json');
 
-// const FloatingParkCard = ({ park, onClose }) => {
-//   return (
-//     <div className="floating-park-card-overlay">
-//       <div className="floating-park-card">
-//         {/* Close button */}
-//         <button className="close-button" onClick={onClose}>
-//           &times;
-//         </button>
-
-//         {/* Park details */}
-//         <h2><span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>{park.park_name}</span></h2>
-//         <hr className="separator" />
-//         <p>Park Code: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.park_code}</span></p>
-//         <p>State: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.state}</span></p>
-//         <p>Acres: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.acres}</span></p>
-//         <p>Latitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.latitude}</span></p>
-//         <p>Longitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.longitude}</span></p>
-//       </div>
-//     </div>
-//   );
-// };
-
+//this component is used to populate the card that shows the information about
+// a park when the user clicks on a park in the table. The information includes
+// details of the park, trails in the park, and airbnbs near the park.
 const FloatingParkCard = ({ park, onClose }) => {
   const [trails, setTrails] = useState([]);
   const [airbnbs, setAirbnbs] = useState([]);
 
   useEffect(() => {
     if (park) {
+      // Fetch trails for a park
       fetch(`http://${config.server_host}:${config.server_port}/trails?park=${park.park_code}`)
         .then((res) => res.json())
         .then((data) => {
           console.log("Trails Data:", data);
           setTrails(data);
         });
-
+      // Fetch airbnbs for a park
       fetch(`http://${config.server_host}:${config.server_port}/airbnbs?park_code=${park.park_code}`)
         .then((res) => res.json())
         .then(setAirbnbs);
@@ -128,38 +110,48 @@ const FloatingParkCard = ({ park, onClose }) => {
 
 const SearchPage = () => {
 
+//store the park codes
 const [data, setData] = useState([]);
+
+//store the page size used by Datagrid
 const [pageSize, setPageSize] = useState(10);
+
+//stort the type of sort
 const [sort, setSort] = useState('');
+
+//store the search input
 const [searchInput, setSearchInput] = useState('');
+
+//store the type of search
 const [searchBy, setSearchBy] = useState('Name');
+
+//store the park id of the selected park
 const [selectedParkId, setSelectedParkId] = useState(null);
 
-
+//fetch the list of all parks with their details: state, acres, location, and species count
 useEffect(() => {
   fetch(`http://${config.server_host}:${config.server_port}/parks`)
     .then(res => res.json())
     .then(resJson => {
       const parksWithId = resJson.map((park) => ({ id: park.park_code, ...park }));
       setData(parksWithId);
-      console.log(parksWithId)
     });
 }, []);
 
-
+//search for parks by name, species, or state
 const search = () => {
   fetch(`http://${config.server_host}:${config.server_port}/search?sort=${sort}` +
     `&searchBy=${searchBy}&searchTerm=${searchInput}`
   )
     .then(res => res.json())
     .then(resJson => {
-      // DataGrid expects an array of objects with a unique id.
-      // To accomplish this, we use a map with spread syntax (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+      // create an array of objects with the park_code as the id which is unique 
       const parksWithId = resJson.map((park) => ({ id: park.park_code, ...park }));
       setData(parksWithId);
     });
 }
 
+//species the columns for the Datagrid
 const columns = [
   { field: 'park_name', headerName: 'Park Name', width: 400, renderCell: (params) => (
       <Link onClick={() => setSelectedParkId(params.row)}>{params.value}</Link>
@@ -171,10 +163,12 @@ const columns = [
   { field: 'species_count', headerName: 'Species Count',width:200}
 ]
 
+//change the sort type if user selects a different sort option
 function handleSortChange(event) {
   setSort(event.target.value);
 }
 
+//change the search type if user selects a different search option
 function handleSearchChange(event) {
   if(event.target.value === 'park')
   {
@@ -190,32 +184,10 @@ function handleSearchChange(event) {
   }
 }
 
+//change the search input if user searches with a different search input
 function handleSearchContent(event) {
   setSearchInput(event.target.value);
 }
-
-// const FloatingParkCard = ({ park, onClose }) => {
-//   return (
-//     <div className="floating-park-card-overlay">
-//       <div className="floating-park-card">
-//         {/* Close button */}
-//         <button className="close-button" onClick={onClose}>
-//           &times;
-//         </button>
-
-//         {/* Park details */}
-//         <h2><span style={{fontFamily: "Apple Chancery", fontSize: '24px', fontWeight: 'bold'}}>{park.park_name}</span></h2>
-//         <hr className="separator" />
-//         <p>Park Code: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.park_code}</span></p>
-//         <p>State: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.state}</span></p>
-//         <p>Acres: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.acres}</span></p>
-//         <p>Latitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.latitude}</span></p>
-//         <p>Longitude: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.longitude}</span></p>
-//         <p>Number of Species: <span style={{fontSize: '20px', fontWeight: 'bold'}}>{park.species_count}</span></p>
-//       </div>
-//     </div>
-//   );
-// };
 
 return (
 
@@ -265,12 +237,6 @@ return (
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         autoHeight
       />
-      {/* {selectedParkId && (
-        <FloatingParkCard
-          park={selectedParkId}
-          onClose={() => setSelectedParkId(null)}
-        />
-      )} */}
     </Container>
 
 );
