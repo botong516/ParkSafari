@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
-        
+
       - name: Create config.json 📝
         id: create-json
         uses: jsdaniell/create-json@v1.2.2
