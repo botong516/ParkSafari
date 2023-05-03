@@ -18,7 +18,9 @@ jobs:
 
       - name: Copy config file 📝
         working-directory: ./server
-        run: echo ${{ secrets.CONFIG }} > config.json
+        run: |
+          config=${{ secrets.CONFIG }}
+          echo "$config" > config.json
 
       - uses: actions/setup-node@v3
         with:
