@@ -265,12 +265,12 @@ return (
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         autoHeight
       />
-      {selectedParkId && (
+      {/* {selectedParkId && (
         <FloatingParkCard
           park={selectedParkId}
           onClose={() => setSelectedParkId(null)}
         />
-      )}
+      )} */}
     </Container>
 
 );
