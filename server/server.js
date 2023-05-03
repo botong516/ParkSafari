@@ -8,6 +8,7 @@ app.use(cors({
   origin: '*',
 }));
 
+//below is the list of routes that our application will use
 app.get('/', routes.index)
 app.get('/parks', routes.parks);
 app.get('/species', routes.species);
